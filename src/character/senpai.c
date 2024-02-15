@@ -4,18 +4,14 @@
   file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-#include "boot/character.h"
-#include "boot/mem.h"
-#include "boot/archive.h"
-#include "boot/stage.h"
-#include "boot/main.h"
+#include "senpai.h"
 
-//Senpai assets
-static u8 char_senpai_arc_main[] = {
-	#include "iso/senpai/main.arc.h"
-};
+#include "../mem.h"
+#include "../archive.h"
+#include "../stage.h"
+#include "../main.h"
 
-//Senpai character structure
+//Dad character structure
 enum
 {
 	Senpai_ArcMain_Senpai0,
@@ -30,13 +26,14 @@ typedef struct
 	Character character;
 	
 	//Render data and state
+	IO_Data arc_main;
 	IO_Data arc_ptr[Senpai_Arc_Max];
 	
 	Gfx_Tex tex;
 	u8 frame, tex_id;
 } Char_Senpai;
 
-//Senpai character definitions
+//Dad character definitions
 static const CharFrame char_senpai_frame[] = {
 	{Senpai_ArcMain_Senpai0, {  0,   0,  66, 112}, { 32, 107}}, //0 idle 1
 	{Senpai_ArcMain_Senpai0, { 67,   0,  65, 112}, { 31, 107}}, //1 idle 2
@@ -69,8 +66,8 @@ static const Animation char_senpai_anim[CharAnim_Max] = {
 	{0, (const u8[]){ASCR_CHGANI, CharAnim_Idle}},       //CharAnim_RightAlt
 };
 
-//Senpai character functions
-static void Char_Senpai_SetFrame(void *user, u8 frame)
+//Dad character functions
+void Char_Senpai_SetFrame(void *user, u8 frame)
 {
 	Char_Senpai *this = (Char_Senpai*)user;
 	
@@ -84,7 +81,7 @@ static void Char_Senpai_SetFrame(void *user, u8 frame)
 	}
 }
 
-static void Char_Senpai_Tick(Character *character)
+void Char_Senpai_Tick(Character *character)
 {
 	Char_Senpai *this = (Char_Senpai*)character;
 	
@@ -104,19 +101,22 @@ static void Char_Senpai_Tick(Character *character)
 	Character_Draw(character, &this->tex, &char_senpai_frame[this->frame]);
 }
 
-static void Char_Senpai_SetAnim(Character *character, u8 anim)
+void Char_Senpai_SetAnim(Character *character, u8 anim)
 {
 	//Set animation
 	Animatable_SetAnim(&character->animatable, anim);
 	Character_CheckStartSing(character);
 }
 
-static void Char_Senpai_Free(Character *character)
+void Char_Senpai_Free(Character *character)
 {
-	(void)character;
+	Char_Senpai *this = (Char_Senpai*)character;
+	
+	//Free art
+	Mem_Free(this->arc_main);
 }
 
-static Character *Char_Senpai_New(fixed_t x, fixed_t y)
+Character *Char_Senpai_New(fixed_t x, fixed_t y)
 {
 	//Allocate senpai object
 	Char_Senpai *this = Mem_Alloc(sizeof(Char_Senpai));
@@ -145,6 +145,8 @@ static Character *Char_Senpai_New(fixed_t x, fixed_t y)
 	this->character.focus_zoom = FIXED_DEC(2,1);
 	
 	//Load art
+	this->arc_main = IO_Read("\\CHAR\\SENPAI.ARC;1");
+	
 	const char **pathp = (const char *[]){
 		"senpai0.tim", //Senpai_ArcMain_Senpai0
 		"senpai1.tim", //Senpai_ArcMain_Senpai1
@@ -152,7 +154,7 @@ static Character *Char_Senpai_New(fixed_t x, fixed_t y)
 	};
 	IO_Data *arc_ptr = this->arc_ptr;
 	for (; *pathp != NULL; pathp++)
-		*arc_ptr++ = Archive_Find((IO_Data)char_senpai_arc_main, *pathp);
+		*arc_ptr++ = Archive_Find(this->arc_main, *pathp);
 	
 	//Initialize render state
 	this->tex_id = this->frame = 0xFF;

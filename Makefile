@@ -1,39 +1,54 @@
 TARGET = funkin
 TYPE = ps-exe
 
-SRCS = src/boot/main.c \
-       src/boot/mutil.c \
-       src/boot/random.c \
-       src/boot/archive.c \
-       src/boot/font.c \
-       src/boot/trans.c \
-       src/boot/loadscr.c \
-       src/boot/menu.c \
-       src/boot/stage.c \
-       src/boot/psx/psx.c \
-       src/boot/psx/io.c \
-       src/boot/psx/gfx.c \
-       src/boot/psx/audio.c \
-       src/boot/psx/pad.c \
-       src/boot/psx/timer.c \
-       src/boot/psx/movie.c \
-       src/boot/animation.c \
-       src/boot/character.c \
-       src/boot/object.c \
-       src/boot/object/combo.c \
-       src/boot/object/splash.c \
-       src/menu/menu.c \
-       src/week1/week1.c \
-       src/week2/week2.c \
-       src/week3/week3.c \
-       src/week4/week4.c \
-       src/week6/week6.c \
+SRCS = src/main.c \
+       src/mutil.c \
+       src/random.c \
+       src/archive.c \
+       src/font.c \
+       src/trans.c \
+       src/loadscr.c \
+       src/menu.c \
+       src/stage.c \
+       src/psx/psx.c \
+       src/psx/io.c \
+       src/psx/gfx.c \
+       src/psx/audio.c \
+       src/psx/pad.c \
+       src/psx/timer.c \
+       src/psx/movie.c \
+       src/stage/dummy.c \
+       src/stage/week1.c \
+       src/stage/week2.c \
+       src/stage/week3.c \
+       src/stage/week4.c \
+       src/stage/week5.c \
+       src/stage/week6.c \
+       src/stage/week7.c \
+       src/animation.c \
+       src/character.c \
+       src/character/bf.c \
+       src/character/bfweeb.c \
+       src/character/speaker.c \
+       src/character/dad.c \
+       src/character/spook.c \
+       src/character/pico.c \
+       src/character/mom.c \
+       src/character/xmasbf.c \
+       src/character/xmasp.c \
+       src/character/senpai.c \
+       src/character/senpaim.c \
+       src/character/spirit.c \
+       src/character/tank.c \
+       src/character/gf.c \
+       src/character/gfweeb.c \
+       src/character/clucky.c \
+       src/object.c \
+       src/object/combo.c \
+       src/object/splash.c \
        mips/common/crt0/crt0.s
 
-OVERLAYSCRIPT  ?= overlay.ld
-OVERLAYSECTION ?= .menu .week1 .week2 .week3 .week4 .week6
-
-CPPFLAGS += -Wall -Wextra -pedantic -Isrc/ -mno-check-zero-division
+CPPFLAGS += -Wall -Wextra -pedantic -mno-check-zero-division
 LDFLAGS += -Wl,--start-group
 # TODO: remove unused libraries
 LDFLAGS += -lapi
@@ -61,21 +76,3 @@ LDFLAGS += -lspu
 LDFLAGS += -flto -Wl,--end-group
 
 include mips/common.mk
-
-all: \
-	iso/menu/menu.exe \
-	iso/week1/week1.exe \
-	iso/week2/week2.exe \
-	iso/week3/week3.exe \
-	iso/week4/week4.exe \
-	iso/week6/week6.exe
-
-iso/%.exe:
-	tools/funkinexepak/funkinexepak $@ $^
-
-iso/menu/menu.exe: Overlay.menu iso/menu/back.tim iso/menu/ng.tim iso/menu/story.tim iso/menu/title.tim iso/font/bold.tim iso/font/arial.tim
-iso/week1/week1.exe: Overlay.week1 iso/stage/hud0.tim iso/week1/hud1.tim iso/week1/back0.tim iso/week1/back1.tim
-iso/week2/week2.exe: Overlay.week2 iso/stage/hud0.tim iso/week1/hud1.tim iso/week2/back0.tim iso/week2/back1.tim iso/week2/back2.tim
-iso/week3/week3.exe: Overlay.week3 iso/stage/hud0.tim iso/week1/hud1.tim iso/week3/back0.tim iso/week3/back1.tim iso/week3/back2.tim iso/week3/back3.tim iso/week3/back4.tim iso/week3/back5.tim
-iso/week4/week4.exe: Overlay.week4 iso/stage/hud0.tim iso/week1/hud1.tim iso/week4/back0.tim iso/week4/back1.tim iso/week4/back2.tim iso/week4/back3.tim iso/week4/back4.tim
-iso/week6/week6.exe: Overlay.week6 iso/week6/hud0.tim iso/week6/hud1.tim iso/week6/back0.tim iso/week6/back1.tim iso/week6/back2.tim iso/week6/back3.tim

@@ -13,16 +13,13 @@ mips/psyq/
 *.map
 *.ps-exe
 *.exe
-/Overlay.*
-!overlay.ld
 tools/funkinisopak/funkinisopak
 tools/funkinarcpak/funkinarcpak
 tools/funkinchartpak/funkinchartpak
 tools/funkinpicopak/funkinpicopak
-tools/funkintimpak/funkintimpak
-tools/funkinexepak/funkinexepak
-tools/funkinmuspak/funkinmuspak
-tools/bin2h/bin2h
+tools/funkintimconv/funkintimconv
+tools/psxavenc/psxavenc
+tools/xainterleave/xainterleave
 
 # Exclude object and link files
 obj/
@@ -38,8 +35,7 @@ build/
 # Exclude converted assets
 iso/*/*.tim
 iso/*/*.arc
-iso/*/*/*.mus
+iso/*/*.xa
 iso/*/*.cht
-src/iso/
 
 # Big Chungus

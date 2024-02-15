@@ -41,41 +41,46 @@ On Arch derivatives (Manjaro), the mipsel environment can be installed from AUR 
 
 `trizen -S cross-mipsel-linux-gnu-binutils cross-mipsel-linux-gnu-gcc`
 
-You'll also need to install `ffmpeg` (you may also need to install `avformat`, `avfilter`, and `swscale` separately), and `cmake`, which of course, depends on your distro of choice.
+You'll also need to install `tinyxml2`, `ffmpeg` (you may also need to install `avformat` and `swscale` separately), and `cmake`, which of course, depends on your distro of choice.
 
 ## Compiling mkpsxiso
-First, `cd` to somewhere safe where you can put source code (such as `Documents` or the PSXFunkin folder). Then run these few commands.
+Download mkpsxiso's source from https://github.com/Lameguy64/mkpsxiso, cd to it, and run these two commands.
 
-- `git clone https://github.com/CookiePLMonster/mkpsxiso`
+`cmake -B build -DCMAKE_BUILD_TYPE=Release` (add `-G "MinGW Makefiles"` to the end of this if you're using MSYS2)
 
-- `cd mkpsxiso`
+`cmake --build build --config Release`
 
-- `git submodule update --init --recursive --remote`
+Then do `ls build/`, and if it went well, you should see a folder that starts with `bin_`, this is where the executable will be, so do `cd build/bin_...` to go to the executable's directory.
 
-- `cmake -B build -DCMAKE_BUILD_TYPE=Release` (add `-G "MinGW Makefiles" --install-prefix /usr/local/` to the end of this if you're using MSYS2)
+Finally, do `sudo cp mkpsxiso /usr/local/bin/mkpsxiso` (MSYS2 doesn't have sudo, so just omit it)
 
-- `cmake --build build --config Release`
-
-- `cmake --install build`
+This will allow you to call mkpsxiso from anywhere (like the PSXFunkin repo).
 
 ## Copying PsyQ files
 First, go to the [mips](/mips/) folder of the repo, and create a new folder named `psyq`.
 
 Then, download the converted PsyQ library from http://psx.arthus.net/sdk/Psy-Q/psyq-4_7-converted-light.zip. Just extract the contents of this into the new `psyq` folder.
 
+## Compiling tools and converting assets
+First, make sure to `cd` to the repo directory where all the makefiles are. You're gonna want to run a few commands from here.
+
+TIP: For any make, try appending `-jX` to the end of it, where X is the number of CPU cores you have times two. This will try to put as much of your CPU as it can to doing whatever it needs to do and makes it go way quicker.
+
+`make -f Makefile.tools` This will compile the tools found in [tools/](/tools/).
+
+`make -f Makefile.tim` This will convert all the pngs in [iso/](/iso/) to TIM files that can be displayed by the PS1.
+
+`make -f Makefile.chr` This will convert all the character jsons in [iso/](/iso/) to chr files that contain mapping and art data.
+
+`make -f Makefile.xa` This will convert all the oggs in [iso/music/](/iso/music/) to XA files that can be played by the PS1. This step will take a WHILE. Be patient!
+
+`make -f Makefile.cht` This will convert all the jsons in [iso/chart/](/iso/chart/) to cht files that can be played by the game.
+
+You can read more about these asset formats in [FORMATS.md](/FORMATS.md)
+
 ## Compiling PSXFunkin
-First, make sure to `cd` to the repo directory where all the makefile is. You're gonna want to run a few commands from here.
+If everything went well, you can `cd` back to the repo directory, run `make`, and it will compile the game and spit out a `funkin.ps-exe` in the same directory.
 
-Then you must run a few makes to convert assets and compile the code.
-- `make -f Makefile.tools`
-- `make -f Makefile.assets`
-- `make`
-
-TIP: For `make`, try appending `-jX` to the end of it, where X is the number of CPU cores you have times two. This will try to put as much of your CPU as it can to doing whatever it needs to do and makes it go way quicker.
-
-You'll need to either get a PSX license file and save it as licensea.dat in the same directory as funkin.xml (you can get them at http://www.psxdev.net/downloads.html `PsyQ SDK`), or remove the referencing line `<license file="licensea.dat"/>` from funkin.xml. Without the license file, the game may fail on a bunch of emulators due to bios checks (unless you use fast boot, I believe?)
+You'll need to either get a PSX license file and save it as licensea.dat in the same directory as funkin.xml (you can get them at http://www.psxdev.net/downloads.html's `PsyQ SDK`), or remove the referencing line `<license file="licensea.dat"/>` from funkin.xml. Without the license file, the game may fail on a bunch of emulators due to bios checks (unless you use fast boot, I believe?)
 
 Finally, you can run `mkpsxiso -y funkin.xml`, which will create the `.bin` and `.cue` files using the ps-exe and assets in `iso/`.
-
-## Modifying the game
-You can read more about the file formats used by the game and the conversion process in [FORMATS.md](/FORMATS.md)

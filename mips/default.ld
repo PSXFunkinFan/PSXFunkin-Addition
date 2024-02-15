@@ -1,3 +1,1 @@
-. = __bss_end;
-. = ALIGN(16);
-__heap_base = .;
+__heap_base     = __bss_end;

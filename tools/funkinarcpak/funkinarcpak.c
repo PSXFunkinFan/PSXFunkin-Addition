@@ -49,10 +49,7 @@ int main(int argc, char *argv[])
 		uint8_t *data;
 	} Pkg_Directory;
 	
-	size_t files = argc - 2;
-	char **filev = (&argv[0]) + 2;
-	
-	Pkg_Directory *dir = malloc(sizeof(Pkg_Directory) * files);
+	Pkg_Directory *dir = malloc(sizeof(Pkg_Directory) * (argc - 2));
 	if (dir == NULL)
 	{
 		printf("Failed to allocate directory\n");
@@ -61,13 +58,13 @@ int main(int argc, char *argv[])
 	
 	//Read files and fill directory
 	Pkg_Directory *dirp = dir;
-	for (size_t i = 0; i < files; i++, dirp++)
+	for (int i = 2; i < argc; i++, dirp++)
 	{
 		//Open file
-		FILE *in = fopen(filev[i], "rb");
+		FILE *in = fopen(argv[i], "rb");
 		if (in == NULL)
 		{
-			printf("Failed to open %s\n", filev[i]);
+			printf("Failed to open %s\n", argv[i]);
 			for (int j = 2; j < i; j++)
 				free(dir[j - 2].data);
 			free(dir);
@@ -94,18 +91,18 @@ int main(int argc, char *argv[])
 	
 	//Set directory positions
 	dirp = dir;
-	dirp->pos = 16 * files;
-	
+	dirp->pos = 16 * (argc - 2);
 	dirp++;
-	for (size_t i = 1; i < files; i++, dirp++)
+	
+	for (int i = 3; i < argc; i++, dirp++)
 		dirp->pos = (dirp[-1].pos + dirp[-1].size + 0xF) & ~0xF;
 	
 	//Write directory
 	dirp = dir;
-	for (int i = 0; i < files; i++, dirp++)
+	for (int i = 2; i < argc; i++, dirp++)
 	{
 		//Cut path
-		char *path = filev[i];
+		char *path = argv[i];
 		
 		char *cuts = path;
 		cuts += strlen(cuts);
@@ -129,7 +126,7 @@ int main(int argc, char *argv[])
 	
 	//Write file data
 	dirp = dir;
-	for (int i = 0; i < files; i++, dirp++)
+	for (int i = 2; i < argc; i++, dirp++)
 	{
 		fseek(out, dirp->pos, SEEK_SET);
 		fwrite(dirp->data, dirp->size, 1, out);
