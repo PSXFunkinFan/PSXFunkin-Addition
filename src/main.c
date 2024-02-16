@@ -11,7 +11,6 @@
 #include "gfx.h"
 #include "audio.h"
 #include "pad.h"
-#include "network.h"
 
 #include "menu.h"
 #include "stage.h"
@@ -26,13 +25,8 @@ void ErrorLock(void)
 {
 	while (1)
 	{
-		#ifdef PSXF_PC
-			MsgPrint(error_msg);
-			exit(1);
-		#else
-			FntPrint("A fatal error has occured\n~c700%s\n", error_msg);
-			Gfx_Flip();
-		#endif
+		FntPrint("A fatal error has occured\n~c700%s\n", error_msg);
+		Gfx_Flip();
 	}
 }
 
@@ -63,7 +57,6 @@ int main(int argc, char **argv)
 	Audio_Init();
 	Gfx_Init();
 	Pad_Init();
-	Network_Init();
 	
 	Timer_Init();
 	
@@ -89,7 +82,6 @@ int main(int argc, char **argv)
 		#endif
 		
 		//Tick and draw game
-		Network_Process();
 		switch (gameloop)
 		{
 			case GameLoop_Menu:
@@ -105,7 +97,6 @@ int main(int argc, char **argv)
 	}
 	
 	//Deinitialize system
-	Network_Quit();
 	Pad_Quit();
 	Gfx_Quit();
 	Audio_Quit();

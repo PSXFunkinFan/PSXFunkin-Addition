@@ -16,8 +16,6 @@
 #include "player.h"
 #include "object.h"
 
-#include "network.h"
-
 //Stage constants
 #define INPUT_LEFT  (PAD_LEFT  | PAD_SQUARE)
 #define INPUT_DOWN  (PAD_DOWN  | PAD_CROSS)
@@ -97,8 +95,6 @@ typedef enum
 	StageMode_Normal,
 	StageMode_Swap,
 	StageMode_2P,
-	StageMode_Net1,
-	StageMode_Net2,
 } StageMode;
 
 typedef enum
@@ -106,7 +102,6 @@ typedef enum
 	StageTrans_Menu,
 	StageTrans_NextSong,
 	StageTrans_Reload,
-	StageTrans_Disconnect,
 } StageTrans;
 
 //Stage background
@@ -184,7 +179,7 @@ typedef struct
 typedef struct
 {
 	//Stage settings
-	boolean ghost, downscroll, expsync;
+	boolean ghost, downscroll;
 	s32 mode;
 	
 	u32 offset;
@@ -271,10 +266,5 @@ void Stage_BlendTexArb(Gfx_Tex *tex, const RECT *src, const POINT_FIXED *p0, con
 void Stage_Load(StageId id, StageDiff difficulty, boolean story);
 void Stage_Unload();
 void Stage_Tick();
-
-#ifdef PSXF_NETWORK
-void Stage_NetHit(Packet *packet);
-void Stage_NetMiss(Packet *packet);
-#endif
 
 #endif
