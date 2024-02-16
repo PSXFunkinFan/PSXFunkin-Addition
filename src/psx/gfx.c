@@ -224,11 +224,6 @@ void Gfx_DrawTexCol(Gfx_Tex *tex, const RECT *src, const RECT *dst, u8 r, u8 g, 
 	csrc = *src;
 	cdst = *dst;
 	
-	if (dst->w < 0)
-		csrc.x--;
-	if (dst->h < 0)
-		csrc.y--;
-	
 	if ((csrc.x + csrc.w) >= 0x100)
 	{
 		csrc.w = 0xFF - csrc.x;
@@ -240,54 +235,10 @@ void Gfx_DrawTexCol(Gfx_Tex *tex, const RECT *src, const RECT *dst, u8 r, u8 g, 
 		cdst.h = cdst.h * csrc.h / src->h;
 	}
 	
-	/*
-	//Subdivide if particularly large
-	if (csrc.w > 0x80)
-	{
-		RECT csrc2, cdst2;
-		
-		int srcs = csrc.w / 2;
-		csrc2.x = csrc.x + srcs;
-		csrc2.w = csrc.w - srcs;
-		csrc2.y = csrc.y;
-		csrc2.h = csrc.h;
-		csrc.w = srcs;
-		
-		int dsts = cdst.w / 2;
-		cdst2.x = cdst.x + dsts;
-		cdst2.w = cdst.w - dsts;
-		cdst2.y = cdst.y;
-		cdst2.h = cdst.h;
-		cdst.w = dsts;
-		
-		Gfx_DrawTexCol(tex, &csrc2, &cdst2, r, g, b);
-	}
-	if (csrc.h > 0x80)
-	{
-		RECT csrc2, cdst2;
-		
-		int srcs = csrc.h / 2;
-		csrc2.x = csrc.x;
-		csrc2.w = csrc.w;
-		csrc2.y = csrc.y + srcs;
-		csrc2.h = csrc.h - srcs;
-		csrc.h = srcs;
-		
-		int dsts = cdst.h / 2;
-		cdst2.x = cdst.x;
-		cdst2.w = cdst.w;
-		cdst2.y = cdst.y + dsts;
-		cdst2.h = cdst.h - dsts;
-		cdst.h = dsts;
-		
-		Gfx_DrawTexCol(tex, &csrc2, &cdst2, r, g, b);
-	}
-	*/
-	
 	//Add quad
 	POLY_FT4 *quad = (POLY_FT4*)nextpri;
 	setPolyFT4(quad);
-	setUVWH(quad, csrc.x, csrc.y, csrc.w, csrc.h);
+	setUVWH(quad, src->x, src->y, csrc.w, csrc.h);
 	setXYWH(quad, cdst.x, cdst.y, cdst.w, cdst.h);
 	setRGB0(quad, r, g, b);
 	quad->tpage = tex->tpage;

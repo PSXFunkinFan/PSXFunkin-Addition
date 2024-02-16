@@ -697,31 +697,42 @@ void Stage_BlendTexArb(Gfx_Tex *tex, const RECT *src, const POINT_FIXED *p0, con
 }
 
 //Stage HUD functions
-static void Stage_DrawHealth(s16 health, u8 i, s8 ox)
+static void Stage_DrawHealth(s16 health, u8 i, boolean is_player)
 {
 	//Check if we should use 'dying' frame
 	s8 dying;
-	if (ox < 0)
-		dying = (health >= 18000) * 24;
+	u8 icon_size = 38;
+	if (!is_player)
+		dying = (health >= 18000) * icon_size;
 	else
-		dying = (health <= 2000) * 24;
+		dying = (health <= 2000) * icon_size;
 	
 	//Get src and dst
 	fixed_t hx = (128 << FIXED_SHIFT) * (10000 - health) / 10000;
 	RECT src = {
-		(i % 5) * 48 + dying,
-		16 + (i / 5) * 24,
-		24,
-		24
+		(i % 3) * (icon_size << 1) + dying,
+		16 + (i / 3) * icon_size,
+		icon_size,
+		icon_size
 	};
+	
+	s8 ox = (is_player) ? 1 : -1;
+	
 	RECT_FIXED dst = {
-		hx + ox * FIXED_DEC(11,1) - FIXED_DEC(12,1),
-		FIXED_DEC(SCREEN_HEIGHT2 - 32 + 4 - 12, 1),
+		hx + ox * FIXED_DEC((icon_size >> 1) - 1,1) - FIXED_DEC(icon_size >> 1,1),
+		FIXED_DEC(SCREEN_HEIGHT2 - icon_size - 10, 1),
 		src.w << FIXED_SHIFT,
 		src.h << FIXED_SHIFT
 	};
 	if (stage.downscroll)
 		dst.y = -dst.y - dst.h;
+	
+	//Flip the icon if it's player
+	if (is_player)
+	{
+		dst.x += dst.w;
+		dst.w = -dst.w;
+	}
 	
 	//Draw health icon
 	Stage_DrawTex(&stage.tex_hud1, &src, &dst, FIXED_MUL(stage.bump, stage.sbump));
@@ -1825,8 +1836,8 @@ void Stage_Tick(void)
 					stage.player_state[0].health = 20000;
 				
 				//Draw health heads
-				Stage_DrawHealth(stage.player_state[0].health, stage.player->health_i,    1);
-				Stage_DrawHealth(stage.player_state[0].health, stage.opponent->health_i, -1);
+				Stage_DrawHealth(stage.player_state[0].health, stage.player->health_i,    true);
+				Stage_DrawHealth(stage.player_state[0].health, stage.opponent->health_i,  false);
 				
 				//Draw health bar
 				RECT health_fill = {0, 0, 256 - (256 * stage.player_state[0].health / 20000), 8};
