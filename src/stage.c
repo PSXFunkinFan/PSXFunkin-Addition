@@ -614,7 +614,7 @@ static void Stage_DrawHealth(s16 health, u8 i, boolean is_player)
 		dying = (health <= 2000) * icon_size;
 	
 	//Get src
-	fixed_t hx = (128 << FIXED_SHIFT) * (10000 - health) / 10000;
+	fixed_t hx = (100 << FIXED_SHIFT) * (10000 - health) / 10000;
 	RECT src = {
 		(i % 3) * (icon_size << 1) + dying,
 		16 + (i / 3) * icon_size,
@@ -625,7 +625,7 @@ static void Stage_DrawHealth(s16 health, u8 i, boolean is_player)
 	//Get dst
 	RECT_FIXED dst = {
 		hx + icon_x * FIXED_DEC((icon_size >> 1) - 1,1) - FIXED_DEC(icon_size >> 1,1),
-		FIXED_DEC(SCREEN_HEIGHT2 - icon_size - 10, 1),
+		FIXED_DEC(SCREEN_HEIGHT2 - icon_size - 12, 1),
 		src.w << FIXED_SHIFT,
 		src.h << FIXED_SHIFT
 	};
@@ -1500,9 +1500,24 @@ void Stage_Tick(void)
 				
 				//Display score
 				RECT score_src = {80, 224, 40, 10};
-				RECT_FIXED score_dst = {(i ^ (stage.mode == StageMode_Swap)) ? FIXED_DEC(-100,1) : FIXED_DEC(14,1), (SCREEN_HEIGHT2 - 42) << FIXED_SHIFT, FIXED_DEC(40,1), FIXED_DEC(10,1)};
+				RECT_FIXED score_dst = {0, (SCREEN_HEIGHT2 - 22) << FIXED_SHIFT, FIXED_DEC(40,1), FIXED_DEC(10,1)};
 				if (stage.downscroll)
 					score_dst.y = -score_dst.y - score_dst.h;
+				
+				s16 score_x = -28; 
+					
+				//Change the score X position when it's in multiplayer mode.
+				if (stage.mode == StageMode_2P)
+				{
+					//Opponent
+					if (i == 1)
+						score_x = -100;	
+					//Player
+					else
+						score_x = 14;
+				}
+				
+				score_dst.x = score_x << FIXED_SHIFT;
 				
 				Stage_DrawTex(&stage.tex_hud0, &score_src, &score_dst, stage.bump);
 				
@@ -1549,9 +1564,9 @@ void Stage_Tick(void)
 				Stage_DrawHealth(stage.player_state[0].health, stage.opponent->health_i,  false);
 				
 				//Draw health bar
-				RECT health_fill = {0, 0, 256 - (256 * stage.player_state[0].health / 20000), 8};
-				RECT health_back = {0, 8, 256, 8};
-				RECT_FIXED health_dst = {FIXED_DEC(-128,1), (SCREEN_HEIGHT2 - 32) << FIXED_SHIFT, 0, FIXED_DEC(8,1)};
+				RECT health_fill = {0, 0, 200 - (200 * stage.player_state[0].health / 20000), 6};
+				RECT health_back = {0, 6, 200, 6};
+				RECT_FIXED health_dst = {FIXED_DEC(-100,1), (SCREEN_HEIGHT2 - 32) << FIXED_SHIFT, 0, FIXED_DEC(6,1)};
 				if (stage.downscroll)
 					health_dst.y = -health_dst.y - health_dst.h;
 				
