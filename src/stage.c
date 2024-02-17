@@ -631,7 +631,7 @@ static void Stage_DrawHealth(s16 health, u8 i, boolean is_player)
 	};
 	
 	if (stage.downscroll)
-		dst.y = -dst.y - dst.h;
+		dst.y = -dst.y - dst.h - FIXED_DEC(6,1);
 	
 	//Flip the icon if it's player
 	if (is_player)
@@ -777,7 +777,7 @@ static void Stage_DrawNotes(void)
 					if (clip < (24 << FIXED_SHIFT))
 					{
 						note_src.x = 160;
-						note_src.y = ((note->type & 0x3) << 5) + 4 + (clip >> FIXED_SHIFT);
+						note_src.y = ((note->type & 0x3) << 5) + (clip >> FIXED_SHIFT);
 						note_src.w = 32;
 						note_src.h = 28 - (clip >> FIXED_SHIFT);
 						
@@ -1502,7 +1502,7 @@ void Stage_Tick(void)
 				RECT score_src = {80, 224, 40, 10};
 				RECT_FIXED score_dst = {0, (SCREEN_HEIGHT2 - 22) << FIXED_SHIFT, FIXED_DEC(40,1), FIXED_DEC(10,1)};
 				if (stage.downscroll)
-					score_dst.y = -score_dst.y - score_dst.h;
+					score_dst.y = -score_dst.y - score_dst.h + FIXED_DEC(20,1);
 				
 				s16 score_x = -28; 
 					
