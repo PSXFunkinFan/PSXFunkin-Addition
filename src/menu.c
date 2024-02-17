@@ -269,6 +269,9 @@ void Menu_Load(MenuPage page)
 	Audio_PlayXA_Track(XA_GettinFreaky, 0x40, 0, 1);
 	Audio_WaitPlayXA();
 	
+	//EPSXE average user smh
+	stage.offset = Audio_TellXA_Milli();
+	
 	//Set background colour
 	Gfx_SetClear(0, 0, 0);
 }
@@ -294,7 +297,7 @@ void Menu_Tick(void)
 	stage.flag &= ~STAGE_FLAG_JUST_STEP;
 	
 	//Get song position
-	u16 next_step = Audio_TellXA_Milli() / 147; //100 BPM
+	u16 next_step = (Audio_TellXA_Milli() - stage.offset) / 147; //100 BPM
 	if (next_step != stage.song_step)
 	{
 		if (next_step >= stage.song_step)

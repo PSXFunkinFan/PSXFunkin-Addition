@@ -1120,9 +1120,6 @@ void Stage_Load(StageId id, StageDiff difficulty, boolean story)
 	//Load music
 	stage.note_scroll = 0;
 	Stage_LoadMusic();
-	
-	//Test offset
-	stage.offset = 0;
 }
 
 void Stage_Unload(void)
