@@ -224,12 +224,12 @@ void Gfx_DrawTexCol(Gfx_Tex *tex, const RECT *src, const RECT *dst, u8 r, u8 g, 
 	csrc = *src;
 	cdst = *dst;
 	
-	if ((csrc.x + csrc.w) >= 0x100)
+	if ((csrc.x + csrc.w) >= 256)
 	{
 		csrc.w = 0xFF - csrc.x;
 		cdst.w = cdst.w * csrc.w / src->w;
 	}
-	if ((csrc.y + csrc.h) >= 0x100)
+	if ((csrc.y + csrc.h) >= 256)
 	{
 		csrc.h = 0xFF - csrc.y;
 		cdst.h = cdst.h * csrc.h / src->h;
