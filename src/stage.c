@@ -601,6 +601,38 @@ void Stage_BlendTexArb(Gfx_Tex *tex, const RECT *src, const POINT_FIXED *p0, con
 }
 
 //Stage HUD functions
+static void Stage_DrawHealthBar(u32 color, boolean is_player)
+{
+	//Health Bar color
+	u8 r = ((color >> 16) & 0xFF) >> 1;
+	u8 g = ((color >>  8) & 0xFF) >> 1;
+	u8 b = ((color >>  0) & 0xFF) >> 1;
+	
+	//Health Bar size
+	u8 health_width = 200;
+	u8 health_height = 6;
+	
+	RECT health_src = {0, 246, health_width, health_height};
+	 
+	 //If it's not the player change the width depending of the player health
+	if (!is_player)
+		health_src.w = health_width - (health_width * stage.player_state[0].health / 20000);
+	
+	RECT_FIXED health_dst = {
+		FIXED_DEC(-health_width / 2,1), 
+		(SCREEN_HEIGHT2 - 32) << FIXED_SHIFT, 
+		(health_src.w) << FIXED_SHIFT, 
+		FIXED_DEC(health_height,1)
+	};
+	
+	if (stage.downscroll)
+		health_dst.y = -health_dst.y - health_dst.h;
+	
+	//Draw health bar
+	Stage_DrawTexCol(&stage.tex_hud1, &health_src, &health_dst, stage.bump, r, g, b);
+	
+}
+
 static void Stage_DrawHealth(s16 health, u8 i, boolean is_player)
 {
 	s8 dying;
@@ -617,7 +649,7 @@ static void Stage_DrawHealth(s16 health, u8 i, boolean is_player)
 	fixed_t hx = (100 << FIXED_SHIFT) * (10000 - health) / 10000;
 	RECT src = {
 		(i % 3) * (icon_size << 1) + dying,
-		16 + (i / 3) * icon_size,
+		(i / 3) * icon_size,
 		icon_size,
 		icon_size
 	};
@@ -1561,16 +1593,9 @@ void Stage_Tick(void)
 				Stage_DrawHealth(stage.player_state[0].health, stage.opponent->health_i,  false);
 				
 				//Draw health bar
-				RECT health_fill = {0, 0, 200 - (200 * stage.player_state[0].health / 20000), 6};
-				RECT health_back = {0, 6, 200, 6};
-				RECT_FIXED health_dst = {FIXED_DEC(-100,1), (SCREEN_HEIGHT2 - 32) << FIXED_SHIFT, 0, FIXED_DEC(6,1)};
-				if (stage.downscroll)
-					health_dst.y = -health_dst.y - health_dst.h;
+				Stage_DrawHealthBar(0xFF0000, false); //Opponent
+				Stage_DrawHealthBar(0x00FF00, true); //Player
 				
-				health_dst.w = health_fill.w << FIXED_SHIFT;
-				Stage_DrawTex(&stage.tex_hud1, &health_fill, &health_dst, stage.bump);
-				health_dst.w = health_back.w << FIXED_SHIFT;
-				Stage_DrawTex(&stage.tex_hud1, &health_back, &health_dst, stage.bump);
 			}
 			
 			//Hardcoded stage stuff

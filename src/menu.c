@@ -74,6 +74,9 @@ static struct
 	fixed_t scroll;
 	fixed_t trans_time;
 	
+	u8 bpm;
+	u8 bpm_algorithm;
+	
 	//Page specific state
 	union
 	{
@@ -272,6 +275,12 @@ void Menu_Load(MenuPage page)
 	//EPSXE average user smh
 	stage.offset = Audio_TellXA_Milli();
 	
+	//Freaky BPM
+	menu.bpm = 101;
+	
+	//Don't even ask about this BPM algorithm. I don't know why it needs to be like this, but it works lol.
+	menu.bpm_algorithm = (250 * 60 / menu.bpm);
+	
 	//Set background colour
 	Gfx_SetClear(0, 0, 0);
 }
@@ -297,7 +306,8 @@ void Menu_Tick(void)
 	stage.flag &= ~STAGE_FLAG_JUST_STEP;
 	
 	//Get song position
-	u16 next_step = (Audio_TellXA_Milli() - stage.offset) / 147; //100 BPM
+	u16 next_step = (Audio_TellXA_Milli() - stage.offset) / menu.bpm_algorithm;
+	
 	if (next_step != stage.song_step)
 	{
 		if (next_step >= stage.song_step)

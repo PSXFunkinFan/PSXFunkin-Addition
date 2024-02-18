@@ -67,6 +67,7 @@ void Timer_Tick(void)
 	//Update counter time
 	if (timer_count == timer_lcount)
 	{
+		// If the emulator failed to increment the timer_count by the Callback, use constant delta time.
 		if (timer_brokeconf != 0xFF)
 			timer_brokeconf++;
 		if (timer_brokeconf >= 10)
@@ -88,6 +89,7 @@ void Timer_Tick(void)
 		timer_secbase = timer_sec;
 		timer_countbase = timer_lcount;
 	}
+	
 	fixed_t next_sec = timer_secbase + FIXED_DIV(timer_count - timer_countbase, timer_persec);
 	
 	timer_dt = next_sec - timer_sec;
