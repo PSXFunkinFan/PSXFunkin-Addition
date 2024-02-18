@@ -1464,6 +1464,7 @@ void Stage_Tick(void)
 						{
 							//Opponent hits note
 							Stage_StartVocal();
+							stage.player_state[1].arrow_hitan[note->type & 0x3] = stage.step_time;
 							if (note->type & NOTE_FLAG_SUSTAIN)
 								opponent_snote = note_anims[note->type & 0x3][(note->type & NOTE_FLAG_ALT_ANIM) != 0];
 							else
