@@ -182,8 +182,6 @@ typedef struct
 	boolean ghost, downscroll;
 	s32 mode;
 	
-	u32 offset;
-	
 	//HUD textures
 	Gfx_Tex tex_hud0, tex_hud1;
 	
