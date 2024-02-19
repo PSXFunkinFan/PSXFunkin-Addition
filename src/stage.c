@@ -22,9 +22,6 @@
 #include "object/splash.h"
 
 //Stage constants
-//#define STAGE_PERFECT //Play all notes perfectly
-//#define STAGE_NOHUD //Disable the HUD
-
 //#define STAGE_FREECAM //Freecam
 
 static const fixed_t note_x[8] = {
@@ -394,7 +391,8 @@ static void Stage_SustainCheck(PlayerState *this, u8 type)
 static void Stage_ProcessPlayer(PlayerState *this, Pad *pad, boolean playing)
 {
 	//Handle player note presses
-	#ifndef STAGE_PERFECT
+	if (!stage.botplay)
+	{
 		if (playing)
 		{
 			u8 i = (this->character == stage.opponent) ? NOTE_FLAG_OPPONENT : 0;
@@ -425,9 +423,10 @@ static void Stage_ProcessPlayer(PlayerState *this, Pad *pad, boolean playing)
 			this->pad_held = this->character->pad_held = 0;
 			this->pad_press = 0;
 		}
-	#endif
+	}
 	
-	#ifdef STAGE_PERFECT
+	if (stage.botplay)
+	{
 		//Do perfect note checks
 		if (playing)
 		{
@@ -488,7 +487,7 @@ static void Stage_ProcessPlayer(PlayerState *this, Pad *pad, boolean playing)
 			this->pad_held = this->character->pad_held = 0;
 			this->pad_press = 0;
 		}
-	#endif
+	}
 }
 
 //Stage drawing functions
@@ -499,47 +498,11 @@ void Stage_DrawTexCol(Gfx_Tex *tex, const RECT *src, const RECT_FIXED *dst, fixe
 	fixed_t wz = dst->w;
 	fixed_t hz = dst->h;
 	
-	if (stage.stage_id >= StageId_6_1 && stage.stage_id <= StageId_6_3)
+	//Don't draw if HUD and is disabled
+	if (tex == &stage.tex_hud0 || tex == &stage.tex_hud1)
 	{
-		//Handle HUD drawing
-		if (tex == &stage.tex_hud0)
-		{
-			#ifdef STAGE_NOHUD
-				return;
-			#endif
-			if (src->y >= 128 && src->y < 224)
-			{
-				//Pixel perfect scrolling
-				xz &= FIXED_UAND;
-				yz &= FIXED_UAND;
-				wz &= FIXED_UAND;
-				hz &= FIXED_UAND;
-			}
-		}
-		else if (tex == &stage.tex_hud1)
-		{
-			#ifdef STAGE_NOHUD
-				return;
-			#endif
-		}
-		else
-		{
-			//Pixel perfect scrolling
-			xz &= FIXED_UAND;
-			yz &= FIXED_UAND;
-			wz &= FIXED_UAND;
-			hz &= FIXED_UAND;
-		}
-	}
-	else
-	{
-		//Don't draw if HUD and is disabled
-		if (tex == &stage.tex_hud0 || tex == &stage.tex_hud1)
-		{
-			#ifdef STAGE_NOHUD
-				return;
-			#endif
-		}
+		if (stage.nohud)
+			return;
 	}
 	
 	fixed_t l = (SCREEN_WIDTH2  << FIXED_SHIFT) + FIXED_MUL(xz, zoom);// + FIXED_DEC(1,2);
@@ -569,10 +532,11 @@ void Stage_DrawTex(Gfx_Tex *tex, const RECT *src, const RECT_FIXED *dst, fixed_t
 void Stage_DrawTexArb(Gfx_Tex *tex, const RECT *src, const POINT_FIXED *p0, const POINT_FIXED *p1, const POINT_FIXED *p2, const POINT_FIXED *p3, fixed_t zoom)
 {
 	//Don't draw if HUD and HUD is disabled
-	#ifdef STAGE_NOHUD
-		if (tex == &stage.tex_hud0 || tex == &stage.tex_hud1)
+	if (tex == &stage.tex_hud0 || tex == &stage.tex_hud1)
+	{
+		if (stage.nohud)
 			return;
-	#endif
+	}
 	
 	//Get screen-space points
 	POINT s0 = {SCREEN_WIDTH2 + (FIXED_MUL(p0->x, zoom) >> FIXED_SHIFT), SCREEN_HEIGHT2 + (FIXED_MUL(p0->y, zoom) >> FIXED_SHIFT)};
@@ -586,10 +550,11 @@ void Stage_DrawTexArb(Gfx_Tex *tex, const RECT *src, const POINT_FIXED *p0, cons
 void Stage_BlendTexArb(Gfx_Tex *tex, const RECT *src, const POINT_FIXED *p0, const POINT_FIXED *p1, const POINT_FIXED *p2, const POINT_FIXED *p3, fixed_t zoom, u8 mode)
 {
 	//Don't draw if HUD and HUD is disabled
-	#ifdef STAGE_NOHUD
-		if (tex == &stage.tex_hud0 || tex == &stage.tex_hud1)
+	if (tex == &stage.tex_hud0 || tex == &stage.tex_hud1)
+	{
+		if (stage.nohud)
 			return;
-	#endif
+	}
 	
 	//Get screen-space points
 	POINT s0 = {SCREEN_WIDTH2 + (FIXED_MUL(p0->x, zoom) >> FIXED_SHIFT), SCREEN_HEIGHT2 + (FIXED_MUL(p0->y, zoom) >> FIXED_SHIFT)};
@@ -1077,7 +1042,8 @@ static void Stage_LoadState(void)
 	//Initialize stage state
 	stage.flag = STAGE_FLAG_VOCAL_ACTIVE;
 	
-	stage.gf_speed = 1 << 2;
+	stage.gf_speed = 4;
+	stage.nohud = false;
 	
 	stage.state = StageState_Play;
 	
@@ -1389,6 +1355,8 @@ void Stage_Tick(void)
 				if (stage.note_scroll < 0)
 					stage.song_step -= 11;
 				stage.song_step /= 12;
+				
+				stage.song_beat = stage.song_step >> 2;
 			}
 			
 			//Update section
@@ -1423,7 +1391,7 @@ void Stage_Tick(void)
 				boolean is_bump_step = (stage.song_step & 0xF) == 0;
 				
 				//M.I.L.F bumps
-				if (stage.stage_id == StageId_4_3 && stage.song_step >= (168 << 2) && stage.song_step < (200 << 2))
+				if (stage.stage_id == StageId_4_3 && stage.song_beat >= 168 && stage.song_beat < 200)
 					is_bump_step = (stage.song_step & 0x3) == 0;
 				
 				//Bump screen
@@ -1603,19 +1571,19 @@ void Stage_Tick(void)
 			switch (stage.stage_id)
 			{
 				case StageId_1_2: //Fresh GF bop
-					switch (stage.song_step)
+					switch (stage.song_beat)
 					{
-						case 16 << 2:
-							stage.gf_speed = 2 << 2;
+						case 16:
+							stage.gf_speed = 8;
 							break;
-						case 48 << 2:
-							stage.gf_speed = 1 << 2;
+						case 48:
+							stage.gf_speed = 4;
 							break;
-						case 80 << 2:
-							stage.gf_speed = 2 << 2;
+						case 80:
+							stage.gf_speed = 8;
 							break;
-						case 112 << 2:
-							stage.gf_speed = 1 << 2;
+						case 112:
+							stage.gf_speed = 4;
 							break;
 					}
 					break;

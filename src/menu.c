@@ -310,6 +310,7 @@ void Menu_Tick(void)
 		if (next_step >= stage.song_step)
 			stage.flag |= STAGE_FLAG_JUST_STEP;
 		stage.song_step = next_step;
+		stage.song_beat = stage.song_step >> 2;
 	}
 	
 	//Handle transition out
@@ -327,10 +328,8 @@ void Menu_Tick(void)
 	{
 		case MenuPage_Opening:
 		{
-			u16 beat = stage.song_step >> 2;
-			
 			//Start title screen if opening ended
-			if (beat >= 16)
+			if (stage.song_beat >= 16)
 			{
 				menu.page = menu.next_page = MenuPage_Title;
 				menu.page_swap = true;
@@ -346,7 +345,7 @@ void Menu_Tick(void)
 				RECT src_ng = {0, 0, 128, 128};
 				const char **funny_message = funny_messages[menu.page_state.opening.funny_message];
 				
-				switch (beat)
+				switch (stage.song_beat)
 				{
 					case 3:
 						menu.font_bold.draw(&menu.font_bold, "PRESENT", SCREEN_WIDTH2, SCREEN_HEIGHT2 + 32, FontAlign_Center);
@@ -977,9 +976,9 @@ void Menu_Tick(void)
 				} spec;
 			} menu_options[] = {
 				{OptType_Enum,    "GAMEMODE", &stage.mode, {.spec_enum = {COUNT_OF(gamemode_strs), gamemode_strs}}},
-				//{OptType_Boolean, "INTERPOLATION", &stage.expsync},
 				{OptType_Boolean, "GHOST TAP ", &stage.ghost, {.spec_boolean = {0}}},
 				{OptType_Boolean, "DOWNSCROLL", &stage.downscroll, {.spec_boolean = {0}}},
+				{OptType_Boolean, "BOTPLAY", &stage.botplay, {.spec_boolean = {0}}},
 			};
 			
 			//Initialize page

@@ -179,8 +179,10 @@ typedef struct
 typedef struct
 {
 	//Stage settings
-	boolean ghost, downscroll;
+	boolean ghost, downscroll, botplay;
 	s32 mode;
+	
+	boolean nohud;
 	
 	//HUD textures
 	Gfx_Tex tex_hud0, tex_hud1;
@@ -229,7 +231,7 @@ typedef struct
 	u16 step_base;
 	Section *section_base;
 	
-	s16 song_step;
+	s16 song_step, song_beat;
 	
 	u8 gf_speed; //Typically 4 steps, changes in Fresh
 	
