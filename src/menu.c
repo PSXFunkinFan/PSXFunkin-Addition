@@ -272,9 +272,6 @@ void Menu_Load(MenuPage page)
 	Audio_PlayXA_Track(XA_GettinFreaky, 0x40, 0, 1);
 	Audio_WaitPlayXA();
 	
-	//EPSXE average user smh
-	stage.offset = Audio_TellXA_Milli();
-	
 	//Freaky BPM
 	menu.bpm = 101;
 	
@@ -306,7 +303,7 @@ void Menu_Tick(void)
 	stage.flag &= ~STAGE_FLAG_JUST_STEP;
 	
 	//Get song position
-	u16 next_step = (Audio_TellXA_Milli() - stage.offset) / menu.bpm_algorithm;
+	u16 next_step = Audio_TellXA_Milli() / menu.bpm_algorithm;
 	
 	if (next_step != stage.song_step)
 	{

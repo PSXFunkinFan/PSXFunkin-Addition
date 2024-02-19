@@ -16,6 +16,7 @@
 #define XA_STATE_SEEKING (1 << 3)
 static u8 xa_state, xa_resync, xa_volume, xa_channel;
 static u32 xa_pos, xa_start, xa_end;
+static s16 xa_offset;
 
 //XA files and tracks
 static CdlFILE xa_files[XA_Max];
@@ -156,6 +157,9 @@ static void Audio_PlayXA_File(CdlFILE *file, u8 volume, u8 channel, boolean loop
 	IO_SeekFile(file);
 	XA_SetFilter(channel);
 	XA_SetVolume(volume);
+	
+	//Shitty emulator average user smh
+	xa_offset = XA_TellSector() - xa_start;
 }
 
 void Audio_PlayXA_Track(XA_Track track, u8 volume, u8 channel, boolean loop)
@@ -296,7 +300,7 @@ void Audio_ProcessXA(void)
 		}
 		
 		//Get CD position
-		u32 next_pos = XA_TellSector();
+		u32 next_pos = XA_TellSector() - xa_offset;
 		if (next_pos > xa_pos)
 			xa_pos = next_pos;
 		

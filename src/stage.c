@@ -1325,7 +1325,7 @@ void Stage_Tick(void)
 					Audio_PlayXA_Track(stage.stage_def->music_track, 0x40, stage.stage_def->music_channel, 0);
 					
 					//Update song time
-					fixed_t audio_time = (fixed_t)Audio_TellXA_Milli() - stage.offset;
+					fixed_t audio_time = (fixed_t)Audio_TellXA_Milli();
 					if (audio_time < 0)
 						audio_time = 0;
 					stage.interp_ms = (audio_time << FIXED_SHIFT) / 1000;
@@ -1344,7 +1344,7 @@ void Stage_Tick(void)
 			else if (Audio_PlayingXA())
 			{
 				fixed_t audio_time_pof = (fixed_t)Audio_TellXA_Milli();
-				fixed_t audio_time = (audio_time_pof > 0) ? (audio_time_pof - stage.offset) : 0;	
+				fixed_t audio_time = (audio_time_pof > 0) ? (audio_time_pof) : 0;	
 		
 				//Sync
 				stage.interp_ms = (audio_time << FIXED_SHIFT) / 1000;
