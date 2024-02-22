@@ -82,15 +82,15 @@ void Back_Week3_DrawBG(StageBack *back)
 		RECT src;
 		fixed_t scale;
 	} roof_piece[] = {
-		{{  0, 0,  16, 256}, FIXED_MUL(FIXED_DEC(3,1) * 7 / 10, FIXED_UNIT + FIXED_DEC(SCREEN_WIDEOADD,2) * 10 / 336)},
+		{{  0, 0,  16, 256}, FIXED_MUL(FIXED_DEC(3,1) * 7 / 10, FIXED_UNIT * 10 / 336)},
 		{{ 16, 0,  55, 256}, FIXED_DEC(1,1) * 9 / 10},
 		{{ 71, 0, 128, 256}, FIXED_DEC(265,100) * 7 / 10},
 		{{199, 0,  55, 256}, FIXED_DEC(1,1) * 9 / 10},
-		{{255, 0,   0, 256}, FIXED_DEC(16,1) + FIXED_DEC(SCREEN_WIDEOADD2,1)}
+		{{255, 0,   0, 256}, FIXED_DEC(16,1)}
 	};
 	
 	RECT_FIXED roof_dst = {
-		FIXED_DEC(-210,1) - FIXED_DEC(SCREEN_WIDEOADD,2) - fx,
+		FIXED_DEC(-210,1) - fx,
 		FIXED_DEC(-106,1) - fy,
 		0,
 		FIXED_DEC(220,1)
@@ -217,10 +217,10 @@ void Back_Week3_DrawBG(StageBack *back)
 	
 	RECT sky_src = {0, 0, 255, 128};
 	RECT_FIXED sky_dst = {
-		FIXED_DEC(-166,1) - FIXED_DEC(SCREEN_WIDEOADD,2) - fx,
-		FIXED_DEC(-117,1) - FIXED_DEC(SCREEN_WIDEOADD,4) - fy,
-		FIXED_DEC(172,1) + FIXED_DEC(SCREEN_WIDEOADD,1),
-		FIXED_DEC(110,1) + FIXED_DEC(SCREEN_WIDEOADD,2)
+		FIXED_DEC(-166,1) - fx,
+		FIXED_DEC(-117,1) - fy,
+		FIXED_DEC(172,1),
+		FIXED_DEC(110,1)
 	};
 	
 	Stage_DrawTex(&this->tex_back5, &sky_src, &sky_dst, stage.camera.bzoom);

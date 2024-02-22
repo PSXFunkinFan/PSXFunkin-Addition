@@ -16,28 +16,13 @@
 #define SCREEN_WIDTH2  (SCREEN_WIDTH >> 1)
 #define SCREEN_HEIGHT2 (SCREEN_HEIGHT >> 1)
 
-#define SCREEN_WIDEADD (SCREEN_WIDTH - 320)
-#define SCREEN_TALLADD (SCREEN_HEIGHT - 240)
-#define SCREEN_WIDEADD2 (SCREEN_WIDEADD >> 1)
-#define SCREEN_TALLADD2 (SCREEN_TALLADD >> 1)
-
-#define SCREEN_WIDEOADD (SCREEN_WIDEADD > 0 ? SCREEN_WIDEADD : 0)
-#define SCREEN_TALLOADD (SCREEN_TALLADD > 0 ? SCREEN_TALLADD : 0)
-#define SCREEN_WIDEOADD2 (SCREEN_WIDEOADD >> 1)
-#define SCREEN_TALLOADD2 (SCREEN_TALLOADD >> 1)
-
 //Gfx structures
 typedef struct
 {
-#ifdef PSXF_PC
-	u16 tpage_x;
-	u16 tpage_y;
-#else
 	u32 tim_mode;
 	RECT tim_prect, tim_crect;
 	u16 tpage, clut;
 	u8 pxshift;
-#endif
 } Gfx_Tex;
 
 //Gfx functions

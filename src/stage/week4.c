@@ -199,9 +199,9 @@ void Back_Week4_DrawBG(StageBack *back)
 	
 	RECT sunset_src = {0, 0, 256, 256};
 	RECT_FIXED sunset_dst = {
-		FIXED_DEC(-165 - SCREEN_WIDEOADD2,1) - fx,
+		FIXED_DEC(-165,1) - fx,
 		FIXED_DEC(-140,1) - fy,
-		FIXED_DEC(340 + SCREEN_WIDEOADD,1),
+		FIXED_DEC(340,1),
 		FIXED_DEC(260,1)
 	};
 	
