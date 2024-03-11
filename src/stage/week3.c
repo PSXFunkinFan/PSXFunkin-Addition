@@ -82,7 +82,7 @@ void Back_Week3_DrawBG(StageBack *back)
 		RECT src;
 		fixed_t scale;
 	} roof_piece[] = {
-		{{  0, 0,  16, 256}, FIXED_MUL(FIXED_DEC(3,1) * 7 / 10, FIXED_UNIT * 10 / 336)},
+		{{  0, 0,  16, 256}, FIXED_MUL(FIXED_DEC(3,1) * 7 / 10, FIXED_UNIT)},
 		{{ 16, 0,  55, 256}, FIXED_DEC(1,1) * 9 / 10},
 		{{ 71, 0, 128, 256}, FIXED_DEC(265,100) * 7 / 10},
 		{{199, 0,  55, 256}, FIXED_DEC(1,1) * 9 / 10},
