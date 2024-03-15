@@ -98,6 +98,19 @@ static void Stage_CutVocal(void)
 	}
 }
 
+//Stage animation functions
+static void Stage_PlayNoteAnim(PlayerState* this, u16 type, u8 missed)
+{
+	if (missed)
+	{
+		u8 miss_animation = (this->character->spec & CHAR_SPEC_MISSANIM) ? 2 : 0;
+		this->character->set_anim(this->character, note_anims[type & 0x3][miss_animation]);
+	}
+	
+	else
+		this->character->set_anim(this->character, note_anims[type & 0x3][(type & NOTE_FLAG_ALT_ANIM) != 0]);
+}
+
 //Stage camera functions
 static void Stage_FocusCharacter(Character *ch, fixed_t div)
 {
@@ -271,8 +284,9 @@ static u8 Stage_HitNote(PlayerState *this, u8 type, fixed_t offset)
 	return hit_type;
 }
 
-static void Stage_MissNote(PlayerState *this)
+static void Stage_MissNote(PlayerState *this, u16 type)
 {
+	Stage_PlayNoteAnim(this, type, true);
 	if (this->combo)
 	{
 		//Kill combo
@@ -311,7 +325,7 @@ static void Stage_NoteCheck(PlayerState *this, u8 type)
 			//Hit the note
 			note->type |= NOTE_FLAG_HIT;
 			
-			this->character->set_anim(this->character, note_anims[type & 0x3][(note->type & NOTE_FLAG_ALT_ANIM) != 0]);
+			Stage_PlayNoteAnim(this, note->type, false);
 			u8 hit_type = Stage_HitNote(this, type, stage.note_scroll - note_fp);
 			this->arrow_hitan[type & 0x3] = stage.step_time;
 			
@@ -336,10 +350,8 @@ static void Stage_NoteCheck(PlayerState *this, u8 type)
 				this->health = -0x7000;
 			else
 				this->health -= 2000;
-			if (this->character->spec & CHAR_SPEC_MISSANIM)
-				this->character->set_anim(this->character, note_anims[type & 0x3][2]);
-			else
-				this->character->set_anim(this->character, note_anims[type & 0x3][0]);
+			
+			Stage_PlayNoteAnim(this, note->type, true);
 			this->arrow_hitan[type & 0x3] = -1;
 			
 			return;
@@ -351,11 +363,7 @@ static void Stage_NoteCheck(PlayerState *this, u8 type)
 	
 	if (!stage.ghost)
 	{
-		if (this->character->spec & CHAR_SPEC_MISSANIM)
-			this->character->set_anim(this->character, note_anims[type & 0x3][2]);
-		else
-			this->character->set_anim(this->character, note_anims[type & 0x3][0]);
-		Stage_MissNote(this);
+		Stage_MissNote(this, type);
 		
 		this->health -= 400;
 		this->score -= 1;
@@ -380,7 +388,7 @@ static void Stage_SustainCheck(PlayerState *this, u8 type)
 		//Hit the note
 		note->type |= NOTE_FLAG_HIT;
 		
-		this->character->set_anim(this->character, note_anims[type & 0x3][(note->type & NOTE_FLAG_ALT_ANIM) != 0]);
+		Stage_PlayNoteAnim(this, type, false);
 		
 		Stage_StartVocal();
 		this->health += 230;
@@ -736,7 +744,7 @@ static void Stage_DrawNotes(void)
 			{
 				//Missed note
 				Stage_CutVocal();
-				Stage_MissNote(this);
+				Stage_MissNote(this, note->type);
 				this->health -= 475;
 			}
 			
@@ -1201,7 +1209,7 @@ void Stage_Tick(void)
 	//Tick transition
 	
 	//Return to menu when start is pressed
-	if (pad_state.press & PAD_START)
+	if (pad_state.press & PAD_START && stage.state != StageState_DeadLoad)
 	{
 		stage.trans = (stage.state == StageState_Play) ? StageTrans_Menu : StageTrans_Reload;
 		Trans_Start();
