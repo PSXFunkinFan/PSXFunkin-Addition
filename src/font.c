@@ -25,7 +25,7 @@ void Font_Bold_DrawCol(struct FontData *this, const char *text, s32 x, s32 y, Fo
 		case FontAlign_Left:
 			break;
 		case FontAlign_Center:
-			x -= Font_Bold_GetWidth(this, text) >> 1;
+			x -= Font_Bold_GetWidth(this, text) / 2;
 			break;
 		case FontAlign_Right:
 			x -= Font_Bold_GetWidth(this, text);
@@ -33,20 +33,23 @@ void Font_Bold_DrawCol(struct FontData *this, const char *text, s32 x, s32 y, Fo
 	}
 	
 	//Get animation offsets
-	u32 v0 = 0;
 	u8 v1 = (animf_count >> 1) & 1;
 	
 	//Draw string character by character
 	u8 c;
 	while ((c = *text++) != '\0')
 	{
+		u8 v0 = 0;
+		if (v1)
+				v0 ^= 1 * 14;
+			
 		//Draw character
 		if ((c -= 'A') <= 'z' - 'A') //Lower-case will show inverted colours
 		{
-			RECT src = {((c & 0x7) * 28) + ((((v0 >> (c & 0x1F)) & 1) ^ v1) * 14), (c & ~0x7) << 1, 14, 16};
+			RECT src = {((c % 8) * 28) + v0, (c / 8) * 16, 14, 16};
 			Gfx_BlitTexCol(&this->tex, &src, x, y, r, g, b);
-			v0 ^= 1 << (c & 0x1F);
 		}
+		
 		x += 13;
 	}
 }
@@ -83,7 +86,7 @@ void Font_Arial_DrawCol(struct FontData *this, const char *text, s32 x, s32 y, F
 		case FontAlign_Left:
 			break;
 		case FontAlign_Center:
-			x -= Font_Arial_GetWidth(this, text) >> 1;
+			x -= Font_Arial_GetWidth(this, text) / 2;
 			break;
 		case FontAlign_Right:
 			x -= Font_Arial_GetWidth(this, text);

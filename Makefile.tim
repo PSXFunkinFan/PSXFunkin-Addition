@@ -110,3 +110,8 @@ iso/week6/back.arc: iso/week6/back0.tim iso/week6/back1.tim iso/week6/back2.tim
 
 # Week 7
 iso/week7/back.arc: iso/week7/back0.tim iso/week7/back1.tim iso/week7/back2.tim iso/week7/back3.tim
+
+# Rule to clean all .arc and .tim files
+clean:
+	echo "Cleaning .arc and .tim files:"
+	find iso -type f \( -name "*.arc" -o -name "*.tim" \) -print -delete

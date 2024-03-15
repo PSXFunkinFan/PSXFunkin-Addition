@@ -569,9 +569,9 @@ void Stage_BlendTexArb(Gfx_Tex *tex, const RECT *src, const POINT_FIXED *p0, con
 static void Stage_DrawHealthBar(u32 color, boolean is_player)
 {
 	//Health Bar color
-	u8 r = ((color >> 16) & 0xFF) >> 1;
-	u8 g = ((color >>  8) & 0xFF) >> 1;
-	u8 b = ((color >>  0) & 0xFF) >> 1;
+	u8 r = ((color >> 16) & 0xFF) / 2;
+	u8 g = ((color >>  8) & 0xFF) / 2;
+	u8 b = ((color >>  0) & 0xFF) / 2;
 	
 	//Health Bar size
 	u8 health_width = 200;
@@ -613,7 +613,7 @@ static void Stage_DrawHealth(s16 health, u8 i, boolean is_player)
 	//Get src
 	fixed_t hx = (100 << FIXED_SHIFT) * (10000 - health) / 10000;
 	RECT src = {
-		(i % 3) * (icon_size << 1) + dying,
+		(i % 3) * (icon_size * 2) + dying,
 		(i / 3) * icon_size,
 		icon_size,
 		icon_size
@@ -621,7 +621,7 @@ static void Stage_DrawHealth(s16 health, u8 i, boolean is_player)
 	
 	//Get dst
 	RECT_FIXED dst = {
-		hx + icon_x * FIXED_DEC((icon_size >> 1) - 1,1) - FIXED_DEC(icon_size >> 1,1),
+		hx + icon_x * FIXED_DEC((icon_size / 2) - 1,1) - FIXED_DEC(icon_size / 2,1),
 		FIXED_DEC(SCREEN_HEIGHT2 - icon_size - 12, 1),
 		src.w << FIXED_SHIFT,
 		src.h << FIXED_SHIFT
@@ -651,9 +651,9 @@ static void Stage_DrawStrum(u8 i, RECT *note_src, RECT_FIXED *note_dst)
 	if (this->arrow_hitan[i] > 0)
 	{
 		//Play hit animation
-		u8 frame = ((this->arrow_hitan[i] << 1) / stage.step_time) & 1;
-		note_src->x = (i + 1) << 5;
-		note_src->y = 64 - (frame << 5);
+		u8 frame = ((this->arrow_hitan[i] * 2) / stage.step_time) & 1;
+		note_src->x = (i + 1) * 32;
+		note_src->y = 64 - (frame * 32);
 		
 		this->arrow_hitan[i] -= timer_dt;
 		if (this->arrow_hitan[i] <= 0)
@@ -667,7 +667,7 @@ static void Stage_DrawStrum(u8 i, RECT *note_src, RECT_FIXED *note_dst)
 	else if (this->arrow_hitan[i] < 0)
 	{
 		//Play depress animation
-		note_src->x = (i + 1) << 5;
+		note_src->x = (i + 1) * 32;
 		note_src->y = 96;
 		if (!(this->pad_held & note_key[i]))
 			this->arrow_hitan[i] = 0;
@@ -675,7 +675,7 @@ static void Stage_DrawStrum(u8 i, RECT *note_src, RECT_FIXED *note_dst)
 	else
 	{
 		note_src->x = 0;
-		note_src->y = i << 5;
+		note_src->y = i * 32;
 	}
 }
 
@@ -774,7 +774,7 @@ static void Stage_DrawNotes(void)
 					if (clip < (24 << FIXED_SHIFT))
 					{
 						note_src.x = 160;
-						note_src.y = ((note->type & 0x3) << 5) + (clip >> FIXED_SHIFT);
+						note_src.y = ((note->type & 0x3) * 32) + (clip >> FIXED_SHIFT);
 						note_src.w = 32;
 						note_src.h = 28 - (clip >> FIXED_SHIFT);
 						
@@ -801,7 +801,7 @@ static void Stage_DrawNotes(void)
 					if (clip < next_size)
 					{
 						note_src.x = 160;
-						note_src.y = ((note->type & 0x3) << 5);
+						note_src.y = ((note->type & 0x3) * 32);
 						note_src.w = 32;
 						note_src.h = 16;
 						
@@ -823,8 +823,8 @@ static void Stage_DrawNotes(void)
 					continue;
 				
 				//Draw note body
-				note_src.x = 192 + ((note->type & 0x1) << 5);
-				note_src.y = (note->type & 0x2) << 4;
+				note_src.x = 192 + ((note->type & 0x1) * 32);
+				note_src.y = (note->type & 0x2) * 16;
 				note_src.w = 32;
 				note_src.h = 32;
 				
@@ -853,7 +853,7 @@ static void Stage_DrawNotes(void)
 				else
 				{
 					//Draw note fire
-					note_src.x = 192 + ((animf_count & 0x1) << 5);
+					note_src.x = 192 + ((animf_count & 0x1) * 32);
 					note_src.y = 64 + ((animf_count & 0x2) * 24);
 					note_src.w = 32;
 					note_src.h = 48;
@@ -877,7 +877,7 @@ static void Stage_DrawNotes(void)
 					continue;
 				
 				//Draw note
-				note_src.x = 32 + ((note->type & 0x3) << 5);
+				note_src.x = 32 + ((note->type & 0x3) * 32);
 				note_src.y = 0;
 				note_src.w = 32;
 				note_src.h = 32;
@@ -1256,7 +1256,7 @@ void Stage_Tick(void)
 		case StageState_Play:
 		{
 			//Clear per-frame flags
-			stage.flag &= ~(STAGE_FLAG_JUST_STEP | STAGE_FLAG_SCORE_REFRESH);
+			stage.flag &= ~(STAGE_FLAG_JUST_STEP | STAGE_FLAG_JUST_BEAT);
 			
 			//Get song position
 			boolean playing;
@@ -1340,7 +1340,10 @@ void Stage_Tick(void)
 					stage.song_step -= 11;
 				stage.song_step /= 12;
 				
-				stage.song_beat = stage.song_step >> 2;
+				stage.song_beat = stage.song_step / 4;
+				
+				if (stage.flag & STAGE_FLAG_JUST_STEP && (stage.song_step % 4) == 0)
+					stage.flag |= STAGE_FLAG_JUST_BEAT;
 			}
 			
 			//Update section
