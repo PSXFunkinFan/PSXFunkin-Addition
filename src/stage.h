@@ -15,6 +15,7 @@
 #include "character.h"
 #include "player.h"
 #include "object.h"
+#include "font.h"
 
 //Stage constants
 #define INPUT_LEFT  (PAD_LEFT  | PAD_SQUARE | PAD_L2)
@@ -169,9 +170,14 @@ typedef struct
 	s16 health;
 	u16 combo;
 	
-	boolean refresh_score;
-	s32 score, max_score;
-	char score_text[13];
+	s32 score;
+	u16 miss;
+	
+	u16 rating;
+	u16 max_rating;
+	u16 min_rating;
+	boolean refresh_info;
+	char info_text[0x80];
 	
 	u16 pad_held, pad_press;
 } PlayerState;
@@ -186,6 +192,9 @@ typedef struct
 	
 	//HUD textures
 	Gfx_Tex tex_hud0, tex_hud1;
+	
+	//Fonts
+	FontData font_cdr;
 	
 	//Stage data
 	const StageDef *stage_def;
@@ -236,7 +245,6 @@ typedef struct
 	u8 gf_speed; //Typically 4 steps, changes in Fresh
 	
 	PlayerState player_state[2];
-	s32 max_score;
 	
 	enum
 	{

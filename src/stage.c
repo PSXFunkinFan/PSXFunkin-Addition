@@ -243,13 +243,16 @@ static u8 Stage_HitNote(PlayerState *this, u8 type, fixed_t offset)
 	this->combo++;
 	
 	static const s32 score_inc[] = {
-		35, //SICK
-		20, //GOOD
-		10, //BAD
-		 5, //SHIT
+		350, //SICK
+		200, //GOOD
+		100, //BAD
+		 50, //SHIT
 	};
 	this->score += score_inc[hit_type];
-	this->refresh_score = true;
+	
+	this->min_rating += 10;
+	this->max_rating += 10 + (hit_type * 3);
+	this->refresh_info = true;
 	
 	//Restore vocals and health
 	Stage_StartVocal();
@@ -287,6 +290,12 @@ static u8 Stage_HitNote(PlayerState *this, u8 type, fixed_t offset)
 static void Stage_MissNote(PlayerState *this, u16 type)
 {
 	Stage_PlayNoteAnim(this, type, true);
+	
+	this->miss++;
+	this->max_rating += 10;
+	
+	this->refresh_info = true;
+	
 	if (this->combo)
 	{
 		//Kill combo
@@ -366,8 +375,8 @@ static void Stage_NoteCheck(PlayerState *this, u8 type)
 		Stage_MissNote(this, type);
 		
 		this->health -= 400;
-		this->score -= 1;
-		this->refresh_score = true;
+		this->score -= 10;
+		this->refresh_info = true;
 	}
 }
 
@@ -968,23 +977,6 @@ static void Stage_LoadChart(void)
 	for (Note *note = stage.notes; note->pos != 0xFFFF; note++)
 		stage.num_notes++;
 	
-	//Count max scores
-	stage.player_state[0].max_score = 0;
-	stage.player_state[1].max_score = 0;
-	for (Note *note = stage.notes; note->pos != 0xFFFF; note++)
-	{
-		if (note->type & (NOTE_FLAG_SUSTAIN | NOTE_FLAG_MINE))
-			continue;
-		if (note->type & NOTE_FLAG_OPPONENT)
-			stage.player_state[1].max_score += 35;
-		else
-			stage.player_state[0].max_score += 35;
-	}
-	if (stage.mode >= StageMode_2P && stage.player_state[1].max_score > stage.player_state[0].max_score)
-		stage.max_score = stage.player_state[1].max_score;
-	else
-		stage.max_score = stage.player_state[0].max_score;
-	
 	stage.cur_section = stage.sections;
 	stage.cur_note = stage.notes;
 	
@@ -1050,9 +1042,11 @@ static void Stage_LoadState(void)
 		stage.player_state[i].health = 10000;
 		stage.player_state[i].combo = 0;
 		
-		stage.player_state[i].refresh_score = false;
+		stage.player_state[i].refresh_info = false;
 		stage.player_state[i].score = 0;
-		strcpy(stage.player_state[i].score_text, "0");
+		stage.player_state[i].miss = 0;
+		stage.player_state[i].min_rating = stage.player_state[i].max_rating = stage.player_state[i].rating = 0;
+		strcpy(stage.player_state[i].info_text, "Score: 0 | Misses: 0 | Rating: ?");
 		
 		stage.player_state[i].pad_held = stage.player_state[i].pad_press = 0;
 	}
@@ -1076,6 +1070,9 @@ void Stage_Load(StageId id, StageDiff difficulty, boolean story)
 	else
 		Gfx_LoadTex(&stage.tex_hud0, IO_Read("\\STAGE\\HUD0.TIM;1"), GFX_LOADTEX_FREE);
 	Gfx_LoadTex(&stage.tex_hud1, IO_Read("\\STAGE\\HUD1.TIM;1"), GFX_LOADTEX_FREE);
+	
+	//Load Fonts
+	FontData_Load(&stage.font_cdr, Font_CDR);
 	
 	//Load stage background
 	Stage_LoadStage();
@@ -1480,68 +1477,42 @@ void Stage_Tick(void)
 				Stage_DrawTex(&stage.tex_hud0, &note_src, &note_dst, stage.bump);
 			}
 			
-			//Draw score
+			//Draw info
 			for (int i = 0; i < ((stage.mode >= StageMode_2P) ? 2 : 1); i++)
 			{
 				PlayerState *this = &stage.player_state[i];
 				
 				//Get string representing number
-				if (this->refresh_score)
+				if (this->refresh_info)
 				{
-					if (this->score != 0)
-						sprintf(this->score_text, "%d0", this->score * stage.max_score / this->max_score);
-					else
-						strcpy(this->score_text, "0");
-					this->refresh_score = false;
-				}
-				
-				//Display score
-				RECT score_src = {80, 224, 40, 10};
-				RECT_FIXED score_dst = {0, (SCREEN_HEIGHT2 - 22) << FIXED_SHIFT, FIXED_DEC(40,1), FIXED_DEC(10,1)};
-				if (stage.downscroll)
-					score_dst.y = -score_dst.y - score_dst.h + FIXED_DEC(20,1);
-				
-				s16 score_x = -28; 
+					//Calculate rating
+					if (this->max_rating) // Prevent division by zero
+						this->rating = (this->min_rating * 100) / (this->max_rating);
 					
-				//Change the score X position when it's in multiplayer mode.
+					sprintf(this->info_text, "Score: %d | Misses: %d | Rating: %d%%", this->score, this->miss, this->rating);
+					this->refresh_info = false;
+				}		
+				
+				s16 info_x = 40; 	
+				
+				//Change the info X position when it's in multiplayer mode.
 				if (stage.mode == StageMode_2P)
 				{
 					//Opponent
-					if (i == 1)
-						score_x = -100;	
+					if (i)
+						info_x = -100;	
 					//Player
 					else
-						score_x = 14;
+						info_x = 14;
 				}
-				
-				score_dst.x = score_x << FIXED_SHIFT;
-				
-				Stage_DrawTex(&stage.tex_hud0, &score_src, &score_dst, stage.bump);
-				
-				//Draw number
-				score_src.y = 240;
-				score_src.w = 8;
-				score_dst.x += FIXED_DEC(40,1);
-				score_dst.w = FIXED_DEC(8,1);
-				
-				for (const char *p = this->score_text; ; p++)
-				{
-					//Get character
-					char c = *p;
-					if (c == '\0')
-						break;
-					
-					//Draw character
-					if (c == '-')
-						score_src.x = 160;
-					else //Should be a number
-						score_src.x = 80 + ((c - '0') << 3);
-					
-					Stage_DrawTex(&stage.tex_hud0, &score_src, &score_dst, stage.bump);
-					
-					//Move character right
-					score_dst.x += FIXED_DEC(7,1);
-				}
+						
+				//Display info
+				stage.font_cdr.draw(&stage.font_cdr,
+					this->info_text,
+					info_x,
+					(stage.downscroll) ? -(SCREEN_HEIGHT2 - 22) - 8 + 20 : (SCREEN_HEIGHT2 - 22),
+					FontAlign_Center
+				);
 			}
 			
 			if (stage.mode < StageMode_2P)
@@ -1557,8 +1528,8 @@ void Stage_Tick(void)
 					stage.player_state[0].health = 20000;
 				
 				//Draw health heads
-				Stage_DrawHealth(stage.player_state[0].health, stage.player_state[0].character->health_i,    true);
-				Stage_DrawHealth(stage.player_state[0].health, stage.player_state[1].character->health_i,  false);
+				Stage_DrawHealth(stage.player_state[0].health, stage.player_state[1].character->health_i,	false);
+				Stage_DrawHealth(stage.player_state[0].health, stage.player_state[0].character->health_i,	true);
 				
 				//Draw health bar
 				Stage_DrawHealthBar(0xFF0000, false); //Opponent

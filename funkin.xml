@@ -31,6 +31,7 @@
 			<dir name = "font">
 				<file name = "boldfont.tim" type = "data" source = "iso/font/boldfont.tim"/>
 				<file name = "arial.tim" type = "data" source = "iso/font/arial.tim"/>
+				<file name = "cdr.tim" type = "data" source = "iso/font/cdr.tim"/>
 			</dir>
 			
 			<!-- Stage assets -->
