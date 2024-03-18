@@ -186,9 +186,10 @@ void Char_GF_Tick(Character *character)
 void Char_GF_SetAnim(Character *character, u8 anim)
 {
 	//Set animation
-	if (anim == CharAnim_Left || anim == CharAnim_Down || anim == CharAnim_Up || anim == CharAnim_Right || anim == CharAnim_UpAlt)
-		character->sing_end = stage.note_scroll + FIXED_DEC(22,1); //Nearly 2 steps
 	Animatable_SetAnim(&character->animatable, anim);
+	
+	if (anim == CharAnim_Left || anim == CharAnim_Down || anim == CharAnim_Up || anim == CharAnim_Right || anim == CharAnim_UpAlt)
+		character->sing_end = stage.note_scroll + (FIXED_DEC(12,1) * 2); //Nearly 2 steps 
 }
 
 void Char_GF_Free(Character *character)
@@ -223,6 +224,7 @@ Character *Char_GF_New(fixed_t x, fixed_t y)
 	this->character.spec = 0;
 	
 	this->character.health_i = 2;
+	this->character.sing_duration = 4;
 	
 	this->character.focus_x = FIXED_DEC(2,1);
 	this->character.focus_y = FIXED_DEC(-40,1);

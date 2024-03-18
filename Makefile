@@ -8,7 +8,7 @@ SRCS = src/main.c \
        src/font.c \
        src/trans.c \
        src/loadscr.c \
-       src/menu.c \
+       src/menu/menu.c \
        src/stage.c \
        src/psx/psx.c \
        src/psx/io.c \

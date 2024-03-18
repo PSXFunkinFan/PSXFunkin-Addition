@@ -7,6 +7,9 @@
 #ifndef PSXF_GUARD_MAIN_H
 #define PSXF_GUARD_MAIN_H
 
+//#define MODS
+#define ADDITION_VERSION "0.2"
+
 //Game loop
 typedef enum
 {

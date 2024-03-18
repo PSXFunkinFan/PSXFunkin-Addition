@@ -14,7 +14,7 @@
 #include "random.h"
 #include "movie.h"
 
-#include "menu.h"
+#include "menu/menu.h"
 #include "trans.h"
 #include "loadscr.h"
 
@@ -1233,7 +1233,11 @@ void Stage_Tick(void)
 				}
 				else
 				{
+					#ifdef MODS
 					Menu_Load(MenuPage_Mods);
+					#else
+					Menu_Load(MenuPage_Freeplay);
+					#endif
 				}
 				
 				LoadScr_End();

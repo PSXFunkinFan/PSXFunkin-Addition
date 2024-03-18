@@ -7,7 +7,7 @@
 #ifndef PSXF_GUARD_MENU_H
 #define PSXF_GUARD_MENU_H
 
-#include "stage.h"
+#include "../stage.h"
 
 //Menu enums
 typedef enum
@@ -17,7 +17,11 @@ typedef enum
 	MenuPage_Main,
 	MenuPage_Story,
 	MenuPage_Freeplay,
-	MenuPage_Mods,
+	
+	#ifdef MODS
+		MenuPage_Mods,
+	#endif
+	
 	MenuPage_Options,
 	
 	MenuPage_Stage, //Changes game loop

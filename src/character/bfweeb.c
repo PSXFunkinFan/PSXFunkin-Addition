@@ -359,6 +359,7 @@ Character *Char_BFWeeb_New(fixed_t x, fixed_t y)
 	this->character.spec = CHAR_SPEC_MISSANIM;
 	
 	this->character.health_i = 8;
+	this->character.sing_duration = 4;
 	
 	this->character.focus_x = FIXED_DEC(-34,1);
 	this->character.focus_y = FIXED_DEC(-40,1);

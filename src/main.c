@@ -12,7 +12,7 @@
 #include "audio.h"
 #include "pad.h"
 
-#include "menu.h"
+#include "menu/menu.h"
 #include "stage.h"
 
 //Game loop

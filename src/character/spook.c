@@ -161,7 +161,8 @@ Character *Char_Spook_New(fixed_t x, fixed_t y)
 	this->character.spec = 0;
 	
 	this->character.health_i = 3;
-	
+	this->character.sing_duration = 4;
+
 	this->character.focus_x =  FIXED_DEC(65,1);
 	this->character.focus_y = FIXED_DEC(-80,1);
 	this->character.focus_zoom = FIXED_DEC(1,1);
