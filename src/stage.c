@@ -590,7 +590,7 @@ static void Stage_DrawHealthBar(u32 color, boolean is_player)
 	u8 g = ((color >>  8) & 0xFF) / 2;
 	u8 b = ((color >>  0) & 0xFF) / 2;
 	
-	//Health Bar size
+	//Health bar size
 	u8 health_width = 200;
 	u8 health_height = 6;
 	
@@ -1072,7 +1072,7 @@ void Stage_Load(StageId id, StageDiff difficulty, boolean story)
 	Gfx_LoadTex(&stage.tex_hud1, IO_Read("\\STAGE\\HUD1.TIM;1"), GFX_LOADTEX_FREE);
 	
 	//Load Fonts
-	FontData_Load(&stage.font_cdr, Font_CDR);
+	FontData_Load(&stage.font_vcr, Font_VCR, &stage.bump);
 	
 	//Load stage background
 	Stage_LoadStage();
@@ -1489,7 +1489,7 @@ void Stage_Tick(void)
 					if (this->max_rating) // Prevent division by zero
 						this->rating = (this->min_rating * 100) / (this->max_rating);
 					
-					sprintf(this->info_text, "Score: %d | Misses: %d | Rating: %d%%", this->score, this->miss, this->rating);
+					sprintf(this->info_text, "Score: %d | Misses: %d %s | %d%%", this->score, this->miss, (stage.mode != StageMode_2P) ? "Rating:" : "", this->rating);
 					this->refresh_info = false;
 				}		
 				
@@ -1500,17 +1500,17 @@ void Stage_Tick(void)
 				{
 					//Opponent
 					if (i)
-						info_x = -100;	
+						info_x = -50;	
 					//Player
 					else
-						info_x = 14;
+						info_x = 115;
 				}
 						
 				//Display info
-				stage.font_cdr.draw(&stage.font_cdr,
+				stage.font_vcr.draw(&stage.font_vcr,
 					this->info_text,
 					info_x,
-					(stage.downscroll) ? -(SCREEN_HEIGHT2 - 22) - 8 + 20 : (SCREEN_HEIGHT2 - 22),
+					(stage.downscroll) ? -(SCREEN_HEIGHT2 - 22) + 28 : (SCREEN_HEIGHT2 - 22),
 					FontAlign_Center
 				);
 			}

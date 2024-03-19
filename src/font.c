@@ -11,6 +11,22 @@
 
 #include <string.h>
 
+FontData font_bold, font_arial, font_vcr;
+static Gfx_Tex font_tex1;
+
+void Font_DrawTex(struct FontData* this, RECT* src, s32 x, s32 y, u8 r, u8 g, u8 b)
+{
+	if (this->zoom == NULL)
+	{
+		Gfx_BlitTexCol(this->tex, src, x, y, r, g, b);
+	}
+	else
+	{
+		RECT_FIXED dst = {x << FIXED_SHIFT, y << FIXED_SHIFT, src->w << FIXED_SHIFT, src->h << FIXED_SHIFT};
+		Stage_DrawTexCol(this->tex, src, &dst, *this->zoom, r, g, b);
+	}
+}
+
 //Font_Bold
 u16 Font_Bold_GetWidth(struct FontData *this, const char *text)
 {
@@ -41,6 +57,7 @@ void Font_Bold_DrawCol(struct FontData *this, const char *text, s32 x, s32 y, Fo
 	while ((c = *text++) != '\0')
 	{
 		u8 v0 = 0;
+		
 		if (v1)
 				v0 ^= 1 * 14;
 			
@@ -48,7 +65,7 @@ void Font_Bold_DrawCol(struct FontData *this, const char *text, s32 x, s32 y, Fo
 		if ((c -= 'A') <= 'z' - 'A') //Lower-case will show inverted colours
 		{
 			RECT src = {((c % 8) * 28) + v0, (c / 8) * 16, 14, 16};
-			Gfx_BlitTexCol(&this->tex, &src, x, y, r, g, b);
+			Font_DrawTex(this, &src, x, y, r, g, b);
 		}
 		
 		x += 13;
@@ -103,24 +120,24 @@ void Font_Arial_DrawCol(struct FontData *this, const char *text, s32 x, s32 y, F
 			continue;
 		
 		//Draw character
-		RECT src = {font_arialmap[c].ix, font_arialmap[c].iy, font_arialmap[c].iw, font_arialmap[c].ih};
-		Gfx_BlitTexCol(&this->tex, &src, x + font_arialmap[c].gx, y + font_arialmap[c].gy, r, g, b);
+		RECT src = {font_arialmap[c].ix, 129 + font_arialmap[c].iy, font_arialmap[c].iw, font_arialmap[c].ih};
+		Font_DrawTex(this, &src, x, y, r, g, b);
 		
 		//Increment X
 		x += font_arialmap[c].gw;
 	}
 }
 
-//Font_CDR
-#include "font_cdrmap.h"
+//Font_VCR
+#include "font_vcrmap.h"
 
-u16 Font_CDR_GetWidth(struct FontData *this, const char *text)
+u16 Font_VCR_GetWidth(struct FontData *this, const char *text)
 {
 	(void)this;
 	return strlen(text) * 7;
 }
 
-void Font_CDR_DrawCol(struct FontData *this, const char *text, s32 x, s32 y, FontAlign align, u8 r, u8 g, u8 b)
+void Font_VCR_DrawCol(struct FontData *this, const char *text, s32 x, s32 y, FontAlign align, u8 r, u8 g, u8 b)
 {
 	//Offset position based off alignment
 	switch (align)
@@ -128,10 +145,10 @@ void Font_CDR_DrawCol(struct FontData *this, const char *text, s32 x, s32 y, Fon
 		case FontAlign_Left:
 			break;
 		case FontAlign_Center:
-			x -= Font_CDR_GetWidth(this, text) >> 1;
+			x -= Font_VCR_GetWidth(this, text) >> 1;
 			break;
 		case FontAlign_Right:
-			x -= Font_CDR_GetWidth(this, text);
+			x -= Font_VCR_GetWidth(this, text);
 			break;
 	}
 	
@@ -152,14 +169,12 @@ void Font_CDR_DrawCol(struct FontData *this, const char *text, s32 x, s32 y, Fon
 		if ((c -= 0x20) >= 0x60)
 			continue;
 
-		RECT src = {font_cdrmap[c].charX, font_cdrmap[c].charY, font_cdrmap[c].charW, font_cdrmap[c].charL};
+		RECT src = {font_vcrmap[c].charX, 196 + font_vcrmap[c].charY, font_vcrmap[c].charW, font_vcrmap[c].charL};
 		
-		RECT_FIXED dst = {x << FIXED_SHIFT, y << FIXED_SHIFT, src.w << FIXED_SHIFT, src.h << FIXED_SHIFT};
-		
-		Stage_DrawTex(&this->tex, &src, &dst, stage.bump);
+		Font_DrawTex(this, &src, x, y, r, g, b);
 
 		//Increment X
-		x += (font_cdrmap[c].charW - 1);
+		x += (font_vcrmap[c].charW - 1);
 	}
 }
 
@@ -170,29 +185,36 @@ void Font_Draw(struct FontData *this, const char *text, s32 x, s32 y, FontAlign 
 }
 
 //Font functions
-void FontData_Load(FontData *this, Font font)
+void Font_LoadTextures(void)
+{
+	Gfx_LoadTex(&font_tex1, IO_Read("\\FONT\\FONTS1.TIM;1"), GFX_LOADTEX_FREE);
+	
+}
+void FontData_Load(FontData *this, Font font, fixed_t* zoom)
 {
 	//Load the given font
 	switch (font)
 	{
 		case Font_Bold:
 			//Load texture and set functions
-			Gfx_LoadTex(&this->tex, IO_Read("\\FONT\\BOLDFONT.TIM;1"), GFX_LOADTEX_FREE);
+			this->tex = &font_tex1;
 			this->get_width = Font_Bold_GetWidth;
 			this->draw_col = Font_Bold_DrawCol;
 			break;
 		case Font_Arial:
 			//Load texture and set functions
-			Gfx_LoadTex(&this->tex, IO_Read("\\FONT\\ARIAL.TIM;1"), GFX_LOADTEX_FREE);
+			this->tex = &font_tex1;
 			this->get_width = Font_Arial_GetWidth;
 			this->draw_col = Font_Arial_DrawCol;
 			break;
-		case Font_CDR:
+		case Font_VCR:
 			//Load texture and set functions
-			Gfx_LoadTex(&this->tex, IO_Read("\\FONT\\CDR.TIM;1"), GFX_LOADTEX_FREE);
-			this->get_width = Font_CDR_GetWidth;
-			this->draw_col = Font_CDR_DrawCol;
+			this->tex = &font_tex1;
+			this->get_width = Font_VCR_GetWidth;
+			this->draw_col = Font_VCR_DrawCol;
 			break;
 	}
+	
+	this->zoom = zoom;
 	this->draw = Font_Draw;
 }

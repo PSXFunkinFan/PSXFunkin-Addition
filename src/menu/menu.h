@@ -8,6 +8,7 @@
 #define PSXF_GUARD_MENU_H
 
 #include "../stage.h"
+#include "../main.h"
 
 //Menu enums
 typedef enum

@@ -58,7 +58,7 @@ static void XA_Init(void)
 	SpuCommonAttr spu_attr;
 	spu_attr.mask = SPU_COMMON_CDMIX | SPU_COMMON_CDVOLL | SPU_COMMON_CDVOLR;
 	spu_attr.cd.mix = SPU_ON;
-	spu_attr.cd.volume.left = spu_attr.cd.volume.right = 0x6000; //Lame magic number
+	spu_attr.cd.volume.left = spu_attr.cd.volume.right = 0x7fff; //Lame magic number
 	SpuSetCommonAttr(&spu_attr);
 	
 	//Set initial volume

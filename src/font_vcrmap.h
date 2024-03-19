@@ -1,7 +1,7 @@
 static const struct
 {   // X pos  Y pos  width  length 
 	u8 charX, charY, charW, charL;
-} font_cdrmap[0x60] = {
+} font_vcrmap[0x60] = {
 	{128, 34, 4, 9,},  //space
 	{80, 24, 3, 9}, //!
 	{104, 34, 5, 9}, //"

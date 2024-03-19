@@ -194,7 +194,7 @@ typedef struct
 	Gfx_Tex tex_hud0, tex_hud1;
 	
 	//Fonts
-	FontData font_cdr;
+	FontData font_vcr;
 	
 	//Stage data
 	const StageDef *stage_def;

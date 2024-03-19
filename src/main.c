@@ -14,6 +14,7 @@
 
 #include "menu/menu.h"
 #include "stage.h"
+#include "debug.h"
 
 //Game loop
 GameLoop gameloop;
@@ -61,8 +62,11 @@ int main(int argc, char **argv)
 	Timer_Init();
 	
 	//Start game
+	Font_LoadTextures();
+	
 	gameloop = GameLoop_Menu;
 	Menu_Load(MenuPage_Opening);
+	Debug_Load();
 	
 	//Game loop
 	while (PSX_Running())
@@ -80,6 +84,8 @@ int main(int argc, char **argv)
 				FntPrint("mem: %08X/%08X (max %08X)\n", mem_used, mem_size, mem_max);
 			#endif
 		#endif
+		
+		Debug_Tick();
 		
 		//Tick and draw game
 		switch (gameloop)

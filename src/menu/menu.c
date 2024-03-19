@@ -21,6 +21,7 @@
 #include "../loadscr.h"
 
 #include "../stage.h"
+#include "../debug.h"
 #include "../character/gf.h"
 
 //Menu messages
@@ -110,7 +111,6 @@ static struct
 	
 	//Menu assets
 	Gfx_Tex tex_back, tex_ng, tex_story, tex_title;
-	FontData font_bold, font_arial;
 	
 	Character *gf; //Title Girlfriend
 } menu;
@@ -186,7 +186,7 @@ static void Menu_DifficultySelector(s32 x, s32 y)
 		{{240, 64, 16, 32}, {240, 96, 16, 32}}, //right
 	};
 	
-	Gfx_BlitTex(&menu.tex_story, &arrow_src[0][(pad_state.held & PAD_LEFT) != 0], x - 40 - 16, y - 16);
+	Gfx_BlitTex(&menu.tex_story, &arrow_src[0][(pad_state.held & PAD_LEFT) != 0],  x - 40 - 16, y - 16);
 	Gfx_BlitTex(&menu.tex_story, &arrow_src[1][(pad_state.held & PAD_RIGHT) != 0], x + 40, y - 16);
 	
 	//Draw difficulty
@@ -200,20 +200,31 @@ static void Menu_DifficultySelector(s32 x, s32 y)
 	Gfx_BlitTex(&menu.tex_story, diff_src, x - (diff_src->w / 2), y - 9 + ((pad_state.press & (PAD_LEFT | PAD_RIGHT)) != 0));
 }
 
-static void Menu_DrawWeek(const char *week, s32 x, s32 y)
+static void Menu_DrawWeek(const char *week, s32 x, s32 y, boolean is_selected, boolean flash)
 {
+	u8 r = (is_selected) ? 128 : 64;
+	u8 g = (is_selected) ? 128 : 64;
+	u8 b = (is_selected) ? 128 : 64;
+	
+	if (flash && is_selected)
+	{
+		r = (animf_count & 2) ?  51 / 2 : 128;
+		g = (animf_count & 2) ? 255 / 2 : 128;
+		b = (animf_count & 2) ? 255 / 2 : 128;
+	}
+	
 	//Draw label
 	if (week == NULL)
 	{
 		//Tutorial
 		RECT label_src = {0, 0, 112, 32};
-		Gfx_BlitTex(&menu.tex_story, &label_src, x, y);
+		Gfx_BlitTexCol(&menu.tex_story, &label_src, x, y, r, g, b);
 	}
 	else
 	{
 		//Week
 		RECT label_src = {0, 32, 80, 32};
-		Gfx_BlitTex(&menu.tex_story, &label_src, x, y);
+		Gfx_BlitTexCol(&menu.tex_story, &label_src, x, y, r, g, b);
 		
 		//Number
 		x += 80;
@@ -223,7 +234,7 @@ static void Menu_DrawWeek(const char *week, s32 x, s32 y)
 			u8 i = *week - '0';
 			
 			RECT num_src = {128 + ((i % 4) * 32), ((i / 4) * 32), 32, 32};
-			Gfx_BlitTex(&menu.tex_story, &num_src, x, y);
+			Gfx_BlitTexCol(&menu.tex_story, &num_src, x, y, r, g, b);
 			x += 32;
 		}
 	}
@@ -240,8 +251,9 @@ void Menu_Load(MenuPage page)
 	Gfx_LoadTex(&menu.tex_title, Archive_Find(menu_arc, "title.tim"), 0);
 	Mem_Free(menu_arc);
 	
-	FontData_Load(&menu.font_bold, Font_Bold);
-	FontData_Load(&menu.font_arial, Font_Arial);
+	FontData_Load(&font_bold, Font_Bold, NULL);
+	FontData_Load(&font_arial, Font_Arial, NULL);
+	FontData_Load(&font_vcr, Font_VCR, NULL);
 	
 	menu.gf = Char_GF_New(FIXED_DEC(62,1), FIXED_DEC(-12,1));
 	stage.camera.x = stage.camera.y = FIXED_DEC(0,1);
@@ -348,42 +360,42 @@ void Menu_Tick(void)
 				switch (stage.song_beat)
 				{
 					case 3:
-						menu.font_bold.draw(&menu.font_bold, "PRESENT", SCREEN_WIDTH2, SCREEN_HEIGHT2 + 32, FontAlign_Center);
+						font_bold.draw(&font_bold, "PRESENT", SCREEN_WIDTH2, SCREEN_HEIGHT2 + 32, FontAlign_Center);
 				//Fallthrough
 					case 2:
 					case 1:
-						menu.font_bold.draw(&menu.font_bold, "NINJAMUFFIN",   SCREEN_WIDTH2, SCREEN_HEIGHT2 - 32, FontAlign_Center);
-						menu.font_bold.draw(&menu.font_bold, "PHANTOMARCADE", SCREEN_WIDTH2, SCREEN_HEIGHT2 - 16, FontAlign_Center);
-						menu.font_bold.draw(&menu.font_bold, "KAWAISPRITE",   SCREEN_WIDTH2, SCREEN_HEIGHT2,      FontAlign_Center);
-						menu.font_bold.draw(&menu.font_bold, "EVILSKER",      SCREEN_WIDTH2, SCREEN_HEIGHT2 + 16, FontAlign_Center);
+						font_bold.draw(&font_bold, "NINJAMUFFIN",   SCREEN_WIDTH2, SCREEN_HEIGHT2 - 32, FontAlign_Center);
+						font_bold.draw(&font_bold, "PHANTOMARCADE", SCREEN_WIDTH2, SCREEN_HEIGHT2 - 16, FontAlign_Center);
+						font_bold.draw(&font_bold, "KAWAISPRITE",   SCREEN_WIDTH2, SCREEN_HEIGHT2,      FontAlign_Center);
+						font_bold.draw(&font_bold, "EVILSKER",      SCREEN_WIDTH2, SCREEN_HEIGHT2 + 16, FontAlign_Center);
 						break;
 					
 					case 7:
-						menu.font_bold.draw(&menu.font_bold, "NEWGROUNDS",    SCREEN_WIDTH2, SCREEN_HEIGHT2 - 32, FontAlign_Center);
+						font_bold.draw(&font_bold, "NEWGROUNDS",    SCREEN_WIDTH2, SCREEN_HEIGHT2 - 32, FontAlign_Center);
 						Gfx_BlitTex(&menu.tex_ng, &src_ng, (SCREEN_WIDTH2 - 64), SCREEN_HEIGHT2 - 16);
 				//Fallthrough
 					case 6:
 					case 5:
-						menu.font_bold.draw(&menu.font_bold, "IN ASSOCIATION", SCREEN_WIDTH2, SCREEN_HEIGHT2 - 64, FontAlign_Center);
-						menu.font_bold.draw(&menu.font_bold, "WITH",           SCREEN_WIDTH2, SCREEN_HEIGHT2 - 48, FontAlign_Center);
+						font_bold.draw(&font_bold, "IN ASSOCIATION", SCREEN_WIDTH2, SCREEN_HEIGHT2 - 64, FontAlign_Center);
+						font_bold.draw(&font_bold, "WITH",           SCREEN_WIDTH2, SCREEN_HEIGHT2 - 48, FontAlign_Center);
 						break;
 					
 					case 11:
-						menu.font_bold.draw(&menu.font_bold, funny_message[1], SCREEN_WIDTH2, SCREEN_HEIGHT2, FontAlign_Center);
+						font_bold.draw(&font_bold, funny_message[1], SCREEN_WIDTH2, SCREEN_HEIGHT2, FontAlign_Center);
 				//Fallthrough
 					case 10:
 					case 9:
-						menu.font_bold.draw(&menu.font_bold, funny_message[0], SCREEN_WIDTH2, SCREEN_HEIGHT2 - 16, FontAlign_Center);
+						font_bold.draw(&font_bold, funny_message[0], SCREEN_WIDTH2, SCREEN_HEIGHT2 - 16, FontAlign_Center);
 						break;
 					
 					case 15:
-						menu.font_bold.draw(&menu.font_bold, "FUNKIN", SCREEN_WIDTH2, SCREEN_HEIGHT2 + 8, FontAlign_Center);
+						font_bold.draw(&font_bold, "FUNKIN", SCREEN_WIDTH2, SCREEN_HEIGHT2 + 8, FontAlign_Center);
 				//Fallthrough
 					case 14:
-						menu.font_bold.draw(&menu.font_bold, "NIGHT", SCREEN_WIDTH2, SCREEN_HEIGHT2 - 8, FontAlign_Center);
+						font_bold.draw(&font_bold, "NIGHT", SCREEN_WIDTH2, SCREEN_HEIGHT2 - 8, FontAlign_Center);
 				//Fallthrough
 					case 13:
-						menu.font_bold.draw(&menu.font_bold, "FRIDAY", SCREEN_WIDTH2, SCREEN_HEIGHT2 - 24, FontAlign_Center);
+						font_bold.draw(&font_bold, "FRIDAY", SCREEN_WIDTH2, SCREEN_HEIGHT2 - 24, FontAlign_Center);
 						break;
 				}
 				break;
@@ -461,14 +473,14 @@ void Menu_Tick(void)
 				u8 press_g = (58  + ((press_lerp * (255 - 58))  >> 8)) / 2;
 				u8 press_b = (206 + ((press_lerp * (255 - 206)) >> 8)) / 2;
 				
-				RECT press_src = {0, 112, 256, 32};
-				Gfx_BlitTexCol(&menu.tex_title, &press_src, (SCREEN_WIDTH - 256) / 2, SCREEN_HEIGHT - 48, press_r, press_g, press_b);
+				RECT press_src = {0, 118, 256, 24};
+				Gfx_BlitTexCol(&menu.tex_title, &press_src, (SCREEN_WIDTH2 - 128), SCREEN_HEIGHT - 40, press_r, press_g, press_b);
 			}
 			else
 			{
 				//Flash white
-				RECT press_src = {0, (animf_count & 1) ? 144 : 112, 256, 32};
-				Gfx_BlitTex(&menu.tex_title, &press_src, (SCREEN_WIDTH - 256) / 2, SCREEN_HEIGHT - 48);
+				RECT press_src = {0, (animf_count & 1) ? 150 : 118, 256, 24};
+				Gfx_BlitTex(&menu.tex_title, &press_src, (SCREEN_WIDTH2 - 128), SCREEN_HEIGHT - 40);
 			}
 			
 			//Draw Girlfriend
@@ -495,10 +507,10 @@ void Menu_Tick(void)
 				menu.scroll = menu.select * FIXED_DEC(8,1);
 			
 			char addition_engine_text[0x40];
-			sprintf(addition_engine_text, "PSXFUNKIN ADDITION ENGINE %s", ADDITION_VERSION);
+			sprintf(addition_engine_text, "Addition v%s", ADDITION_VERSION);
 			
 			//Draw version identification
-			menu.font_arial.draw(&menu.font_arial,
+			font_vcr.draw(&font_vcr,
 				addition_engine_text,
 				3,
 				SCREEN_HEIGHT - 11 - 11,
@@ -552,7 +564,7 @@ void Menu_Tick(void)
 				//Draw all options
 				for (u8 i = 0; i < COUNT_OF(menu_options); i++)
 				{
-					menu.font_bold.draw(&menu.font_bold,
+					font_bold.draw(&font_bold,
 						Menu_LowerIf(menu_options[i].text, menu.select != i),
 						SCREEN_WIDTH2,
 						SCREEN_HEIGHT2 + (i * 32) - 48 - (menu.scroll >> FIXED_SHIFT),
@@ -563,7 +575,7 @@ void Menu_Tick(void)
 			else if (animf_count & 2)
 			{
 				//Draw selected option
-				menu.font_bold.draw(&menu.font_bold,
+				font_bold.draw(&font_bold,
 					menu_options[menu.select].text,
 					SCREEN_WIDTH2,
 					SCREEN_HEIGHT2 + (menu.select * 32) - 48 - (menu.scroll >> FIXED_SHIFT),
@@ -596,21 +608,10 @@ void Menu_Tick(void)
 			{
 				menu.scroll = 0;
 				menu.page_param.stage.diff = StageDiff_Normal;
-				menu.page_state.title.fade = FIXED_DEC(0,1);
-				menu.page_state.title.fadespd = FIXED_DEC(0,1);
-			}
-			
-			//Draw white fade
-			if (menu.page_state.title.fade > 0)
-			{
-				static const RECT flash = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-				u8 flash_col = menu.page_state.title.fade >> FIXED_SHIFT;
-				Gfx_BlendRect(&flash, flash_col, flash_col, flash_col, 1);
-				menu.page_state.title.fade -= FIXED_MUL(menu.page_state.title.fadespd, timer_dt);
 			}
 			
 			//Draw difficulty selector
-			Menu_DifficultySelector(SCREEN_WIDTH - 75, 80);
+			Menu_DifficultySelector(SCREEN_WIDTH - 56 + 8, 44 + SCREEN_HEIGHT2 + 8);
 			
 			//Handle option and selection
 			if (menu.trans_time > 0 && (menu.trans_time -= timer_dt) <= 0)
@@ -641,8 +642,6 @@ void Menu_Tick(void)
 					menu.page_param.stage.id = menu_options[menu.select].stage;
 					menu.page_param.stage.story = true;
 					menu.trans_time = FIXED_UNIT;
-					menu.page_state.title.fade = FIXED_DEC(255,1);
-					menu.page_state.title.fadespd = FIXED_DEC(510,1);
 				}
 				
 				//Return to main menu if circle is pressed
@@ -655,50 +654,51 @@ void Menu_Tick(void)
 			}
 			
 			//Draw week name and tracks
-			menu.font_bold.draw(&menu.font_bold,
+			font_arial.draw_col(&font_arial,
 				menu_options[menu.select].name,
-				SCREEN_WIDTH - 16,
-				24,
-				FontAlign_Right
+				SCREEN_WIDTH - 8,
+				8,
+				FontAlign_Right,
+				178 >> 1,
+				178 >> 1,
+				178 >> 1
 			);
-			
+				
 			const char * const *trackp = menu_options[menu.select].tracks;
 			for (size_t i = 0; i < COUNT_OF(menu_options[menu.select].tracks); i++, trackp++)
 			{
 				if (*trackp != NULL)
-					menu.font_bold.draw(&menu.font_bold,
+					font_arial.draw_col(&font_arial,
 						*trackp,
-						SCREEN_WIDTH - 16,
-						SCREEN_HEIGHT - (4 * 24) + (i * 24),
-						FontAlign_Right
+						55,
+						22 + 148 + (i * 11),
+						FontAlign_Center,
+						229 >> 1,
+						87 >> 1,
+						119 >> 1
 					);
 			}
 			
 			//Draw upper strip
-			RECT name_bar = {0, 16, SCREEN_WIDTH, 32};
+			RECT name_bar = {0, 14 + 8, SCREEN_WIDTH, 128};
 			Gfx_DrawRect(&name_bar, 249, 207, 81);
 			
 			//Draw options
-			s32 next_scroll = menu.select * FIXED_DEC(48,1);
+			s32 next_scroll = menu.select * FIXED_DEC(36,1);
 			menu.scroll += (next_scroll - menu.scroll) >> 3;
-			
-			if (menu.next_page == menu.page || menu.next_page == MenuPage_Main)
+		
+	
+			//Draw all options
+			for (u8 i = 0; i < COUNT_OF(menu_options); i++)
 			{
-				//Draw all options
-				for (u8 i = 0; i < COUNT_OF(menu_options); i++)
-				{
-					s32 y = 64 + (i * 48) - (menu.scroll >> FIXED_SHIFT);
-					if (y <= 16)
-						continue;
-					if (y >= SCREEN_HEIGHT)
-						break;
-					Menu_DrawWeek(menu_options[i].week, 48, y);
-				}
-			}
-			else if (animf_count & 2)
-			{
-				//Draw selected option
-				Menu_DrawWeek(menu_options[menu.select].week, 48, 64 + (menu.select * 48) - (menu.scroll >> FIXED_SHIFT));
+				s32 y = 44 + SCREEN_HEIGHT2 + (i * 36) - (menu.scroll >> FIXED_SHIFT);
+				boolean can_flash = (menu.next_page != menu.page && menu.next_page != MenuPage_Main);
+				
+				if (y <= 44)
+					continue;
+				if (y >= SCREEN_HEIGHT)
+					break;
+				Menu_DrawWeek(menu_options[i].week, SCREEN_WIDTH2 - 56, y, (menu.select == i), can_flash);
 			}
 			
 			break;
@@ -778,7 +778,7 @@ void Menu_Tick(void)
 					break;
 				
 				//Draw text
-				menu.font_bold.draw(&menu.font_bold,
+				font_bold.draw(&font_bold,
 					Menu_LowerIf(menu_options[i].text, menu.select != i),
 					48 + (y / 4),
 					SCREEN_HEIGHT2 + y - 8,
@@ -884,7 +884,7 @@ void Menu_Tick(void)
 					break;
 				
 				//Draw text
-				menu.font_bold.draw(&menu.font_bold,
+				font_bold.draw(&font_bold,
 					Menu_LowerIf(menu_options[i].text, menu.select != i),
 					48 + (y >> 2),
 					SCREEN_HEIGHT2 + y - 8,
@@ -1006,7 +1006,7 @@ void Menu_Tick(void)
 						sprintf(text, "%s %s", menu_options[i].text, menu_options[i].spec.spec_enum.strs[*((s32*)menu_options[i].value)]);
 						break;
 				}
-				menu.font_bold.draw(&menu.font_bold,
+				font_bold.draw(&font_bold,
 					Menu_LowerIf(text, menu.select != i),
 					48 + (y / 4),
 					SCREEN_HEIGHT2 + y - 8,

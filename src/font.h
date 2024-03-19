@@ -8,13 +8,14 @@
 #define PSXF_GUARD_FONT_H
 
 #include "gfx.h"
+#include "fixed.h"
 
 //Font types
 typedef enum
 {
 	Font_Bold,
 	Font_Arial,
-	Font_CDR,
+	Font_VCR,
 } Font;
 
 typedef enum
@@ -31,10 +32,14 @@ typedef struct FontData
 	void (*draw_col)(struct FontData *this, const char *text, s32 x, s32 y, FontAlign align, u8 r, u8 g, u8 b);
 	void (*draw)(struct FontData *this, const char *text, s32 x, s32 y, FontAlign align);
 	
-	Gfx_Tex tex;
+	Gfx_Tex* tex;
+	fixed_t* zoom;
 } FontData;
 
 //Font functions
-void FontData_Load(FontData *this, Font font);
+void Font_LoadTextures(void);
+void FontData_Load(FontData *this, Font font, fixed_t* zoom);
+
+extern FontData font_bold, font_arial, font_vcr;
 
 #endif
