@@ -1489,7 +1489,7 @@ void Stage_Tick(void)
 					if (this->max_rating) // Prevent division by zero
 						this->rating = (this->min_rating * 100) / (this->max_rating);
 					
-					sprintf(this->info_text, "Score: %d | Misses: %d %s | %d%%", this->score, this->miss, (stage.mode != StageMode_2P) ? "Rating:" : "", this->rating);
+					sprintf(this->info_text, "Score: %d | Misses: %d | %s %d%%", this->score, this->miss, (stage.mode != StageMode_2P) ? "Rating:" : "", this->rating);
 					this->refresh_info = false;
 				}		
 				
