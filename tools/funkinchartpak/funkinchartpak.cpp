@@ -27,13 +27,18 @@ struct Section
 #define NOTE_FLAG_SUSTAIN_END (1 << 4) //Is either end of sustain
 #define NOTE_FLAG_ALT_ANIM    (1 << 5) //Note plays alt animation
 #define NOTE_FLAG_MINE        (1 << 6) //Note is a mine
-#define NOTE_FLAG_HIT         (1 << 7) //Note has been hit
+#define NOTE_FLAG_HIT         (1 << 15) //Note has been hit
 
 struct Note
 {
 	uint16_t pos; //1/12 steps
-	uint8_t type, pad = 0;
+	uint16_t type;
 };
+
+typedef int32_t fixed_t;
+
+#define FIXED_SHIFT (10)
+#define FIXED_UNIT  (1 << FIXED_SHIFT)
 
 uint16_t PosRound(double pos, double crochet)
 {
@@ -44,6 +49,14 @@ void WriteWord(std::ostream &out, uint16_t word)
 {
 	out.put(word >> 0);
 	out.put(word >> 8);
+}
+
+void WriteLong(std::ostream &out, uint32_t word)
+{
+	out.put(word >> 0);
+	out.put(word >> 8);
+	out.put(word >> 16);
+	out.put(word >> 24);
 }
 
 int main(int argc, char *argv[])
@@ -179,8 +192,11 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	
+	//Write header
+	WriteLong(out, (fixed_t)(speed * FIXED_UNIT));
+	WriteWord(out, 6 + (sections.size() * 4));
+	
 	//Write sections
-	WriteWord(out, 2 + (sections.size() << 2));
 	for (auto &i : sections)
 	{
 		WriteWord(out, i.end);
@@ -191,8 +207,7 @@ int main(int argc, char *argv[])
 	for (auto &i : notes)
 	{
 		WriteWord(out, i.pos);
-		out.put(i.type);
-		out.put(0);
+		WriteWord(out, i.type);
 	}
 	return 0;
 }

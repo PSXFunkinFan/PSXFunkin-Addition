@@ -45,3 +45,8 @@ iso/music/clwna.xa: iso/music/improbableoutseti.xa iso/music/improbableoutsetv.x
 iso/music/clwnb.xa: iso/music/hellclowni.xa iso/music/hellclownv.xa iso/music/expurgationi.xa iso/music/expurgationv.xa
 iso/music/kapia.xa: iso/music/wockyi.xa iso/music/wockyv.xa iso/music/beathoveni.xa iso/music/beathovenv.xa
 iso/music/kapib.xa: iso/music/hairballi.xa iso/music/hairballv.xa iso/music/nyawi.xa iso/music/nyawv.xa
+
+# Rule to clean all .xa files
+clean:
+	echo "Cleaning .xa files:"
+	find iso -type f \( -name "*.xa" \) -print -delete

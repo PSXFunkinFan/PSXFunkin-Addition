@@ -8,7 +8,6 @@
 		Back_Week1_New,
 		
 		//Song info
-		{FIXED_DEC(1,1),FIXED_DEC(1,1),FIXED_DEC(13,10)},
 		1, 1,
 		XA_Bopeebo, 0,
 		
@@ -24,7 +23,6 @@
 		Back_Week1_New,
 		
 		//Song info
-		{FIXED_DEC(1,1),FIXED_DEC(13,10),FIXED_DEC(18,10)},
 		1, 2,
 		XA_Fresh, 2,
 		
@@ -40,7 +38,6 @@
 		Back_Week1_New,
 		
 		//Song info
-		{FIXED_DEC(13,10),FIXED_DEC(15,10),FIXED_DEC(23,10)},
 		1, 3,
 		XA_Dadbattle, 0,
 		
@@ -56,7 +53,6 @@
 		Back_Week1_New,
 		
 		//Song info
-		{FIXED_DEC(1,1),FIXED_DEC(1,1),FIXED_DEC(1,1)},
 		1, 4,
 		XA_Tutorial, 2,
 		
@@ -73,7 +69,6 @@
 		Back_Week2_New,
 		
 		//Song info
-		{FIXED_DEC(1,1),FIXED_DEC(17,10),FIXED_DEC(24,10)},
 		2, 1,
 		XA_Spookeez, 0,
 		
@@ -89,7 +84,6 @@
 		Back_Week2_New,
 		
 		//Song info
-		{FIXED_DEC(11,10),FIXED_DEC(15,10),FIXED_DEC(22,10)},
 		2, 2,
 		XA_South, 2,
 		
@@ -105,7 +99,6 @@
 		Back_Week2_New,
 		
 		//Song info
-		{FIXED_DEC(13,10),FIXED_DEC(13,10),FIXED_DEC(16,10)},
 		2, 3,
 		XA_Monster, 0,
 		
@@ -122,7 +115,6 @@
 		Back_Week3_New,
 		
 		//Song info
-		{FIXED_DEC(12,10),FIXED_DEC(14,10),FIXED_DEC(16,10)},
 		3, 1,
 		XA_Pico, 0,
 		
@@ -138,7 +130,6 @@
 		Back_Week3_New,
 		
 		//Song info
-		{FIXED_DEC(1,1),FIXED_DEC(13,10),FIXED_DEC(2,1)},
 		3, 2,
 		XA_Philly, 2,
 		
@@ -154,7 +145,6 @@
 		Back_Week3_New,
 		
 		//Song info
-		{FIXED_DEC(12,10),FIXED_DEC(15,10),FIXED_DEC(23,10)},
 		3, 3,
 		XA_Blammed, 0,
 		
@@ -171,7 +161,6 @@
 		Back_Week4_New,
 		
 		//Song info
-		{FIXED_DEC(13,10),FIXED_DEC(16,10),FIXED_DEC(18,10)},
 		4, 1,
 		XA_SatinPanties, 0,
 		
@@ -187,7 +176,6 @@
 		Back_Week4_New,
 		
 		//Song info
-		{FIXED_DEC(13,10),FIXED_DEC(18,10),FIXED_DEC(2,1)},
 		4, 2,
 		XA_High, 2,
 		
@@ -203,7 +191,6 @@
 		Back_Week4_New,
 		
 		//Song info
-		{FIXED_DEC(14,10),FIXED_DEC(17,10),FIXED_DEC(26,10)},
 		4, 3,
 		XA_MILF, 0,
 		
@@ -219,7 +206,6 @@
 		Back_Dummy_New,
 		
 		//Song info
-		{FIXED_DEC(16,10),FIXED_DEC(16,10),FIXED_DEC(16,10)},
 		4, 4,
 		XA_Test, 2,
 		
@@ -236,7 +222,6 @@
 		Back_Week5_New,
 		
 		//Song info
-		{FIXED_DEC(13,10),FIXED_DEC(13,10),FIXED_DEC(13,10)},
 		5, 1,
 		XA_Cocoa, 0,
 		
@@ -252,7 +237,6 @@
 		Back_Week5_New,
 		
 		//Song info
-		{FIXED_DEC(14,10),FIXED_DEC(16,10),FIXED_DEC(19,10)},
 		5, 2,
 		XA_Eggnog, 2,
 		
@@ -268,7 +252,6 @@
 		Back_Dummy_New,
 		
 		//Song info
-		{FIXED_DEC(1,1),FIXED_DEC(11,10),FIXED_DEC(13,10)},
 		5, 3,
 		XA_WinterHorrorland, 0,
 		
@@ -285,7 +268,6 @@
 		Back_Week6_New,
 		
 		//Song info
-		{FIXED_DEC(1,1),FIXED_DEC(12,10),FIXED_DEC(13,10)},
 		6, 1,
 		XA_Senpai, 0,
 		
@@ -301,7 +283,6 @@
 		Back_Week6_New,
 		
 		//Song info
-		{FIXED_DEC(12,10),FIXED_DEC(13,10),FIXED_DEC(15,10)},
 		6, 2,
 		XA_Roses, 2,
 		
@@ -317,7 +298,6 @@
 		Back_Week6_New,
 		
 		//Song info
-		{FIXED_DEC(11,10),FIXED_DEC(13,10),FIXED_DEC(15,10)},
 		6, 3,
 		XA_Thorns, 0,
 		
@@ -334,7 +314,6 @@
 		Back_Week7_New,
 		
 		//Song info
-		{FIXED_DEC(125,100),FIXED_DEC(18,10),FIXED_DEC(23,10)},
 		7, 1,
 		XA_Ugh, 0,
 		
@@ -350,7 +329,6 @@
 		Back_Week7_New,
 		
 		//Song info
-		{FIXED_DEC(14,10),FIXED_DEC(2,1),FIXED_DEC(25,10)},
 		7, 2,
 		XA_Guns, 2,
 		
@@ -366,7 +344,6 @@
 		Back_Week7_New,
 		
 		//Song info
-		{FIXED_DEC(175,100),FIXED_DEC(22,10),FIXED_DEC(26,10)},
 		7, 3,
 		XA_Stress, 0,
 		
@@ -383,7 +360,6 @@
 		Back_Dummy_New,
 		
 		//Song info
-		{FIXED_DEC(22,10),FIXED_DEC(22,10),FIXED_DEC(22,10)},
 		0x80, 1,
 		XA_Wocky, 0,
 		
@@ -399,7 +375,6 @@
 		Back_Dummy_New,
 		
 		//Song info
-		{FIXED_DEC(21,10),FIXED_DEC(21,10),FIXED_DEC(21,10)},
 		0x80, 2,
 		XA_Beathoven, 2,
 		
@@ -415,7 +390,6 @@
 		Back_Dummy_New,
 		
 		//Song info
-		{FIXED_DEC(19,10),FIXED_DEC(19,10),FIXED_DEC(19,10)},
 		0x80, 3,
 		XA_Hairball, 0,
 		
@@ -431,7 +405,6 @@
 		Back_Dummy_New,
 		
 		//Song info
-		{FIXED_DEC(25,10),FIXED_DEC(25,10),FIXED_DEC(25,10)},
 		0x80, 4,
 		XA_Nyaw, 2,
 		
@@ -448,7 +421,6 @@
 		Back_Dummy_New,
 		
 		//Song info
-		{FIXED_DEC(2,1),FIXED_DEC(25,10),FIXED_DEC(3,1)},
 		0x81, 1,
 		XA_ImprobableOutset, 0,
 		
@@ -464,7 +436,6 @@
 		Back_Dummy_New,
 		
 		//Song info
-		{FIXED_DEC(2,1),FIXED_DEC(25,10),FIXED_DEC(3,1)},
 		0x81, 2,
 		XA_Madness, 2,
 		
@@ -480,7 +451,6 @@
 		Back_Dummy_New,
 		
 		//Song info
-		{FIXED_DEC(2,1),FIXED_DEC(25,10),FIXED_DEC(3,1)},
 		0x81, 3,
 		XA_Hellclown, 0,
 		
@@ -496,7 +466,6 @@
 		Back_Dummy_New,
 		
 		//Song info
-		{FIXED_DEC(34,10),FIXED_DEC(34,10),FIXED_DEC(34,10)},
 		0x81, 4,
 		XA_Expurgation, 2,
 		
@@ -512,7 +481,6 @@
 		Back_Week1_New,
 		
 		//Song info
-		{FIXED_DEC(25,10),FIXED_DEC(25,10),FIXED_DEC(25,10)},
 		2, 4,
 		XA_Clucked, 2,
 		

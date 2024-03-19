@@ -129,8 +129,6 @@ typedef struct
 	StageBack* (*back)();
 	
 	//Song info
-	fixed_t speed[3];
-	
 	u8 week, week_song;
 	u8 music_track, music_channel;
 	
@@ -153,7 +151,7 @@ typedef struct
 #define NOTE_FLAG_SUSTAIN_END (1 << 4) //Is either end of sustain
 #define NOTE_FLAG_ALT_ANIM    (1 << 5) //Note plays alt animation
 #define NOTE_FLAG_MINE        (1 << 6) //Note is a mine
-#define NOTE_FLAG_HIT         (1 << 7) //Note has been hit
+#define NOTE_FLAG_HIT         (1 << 15) //Note has been hit
 
 typedef struct
 {
@@ -176,6 +174,7 @@ typedef struct
 	u16 rating;
 	u16 max_rating;
 	u16 min_rating;
+	
 	boolean refresh_info;
 	char info_text[0x80];
 	
