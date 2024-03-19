@@ -86,7 +86,7 @@ jobs:
               
     - name: Compile PSXFunkin
       run: |
-        sed 's/#define MODS/define MODS src/main.h
+        sed 's/#define MODS/define MODS/' src/main.h
         make -f Makefile.assets
         make
         mkpsxiso -y funkin.xml
