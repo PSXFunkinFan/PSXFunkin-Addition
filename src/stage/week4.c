@@ -24,8 +24,9 @@ typedef struct
 	
 	Gfx_Tex tex_back0; //Foreground limo
 	Gfx_Tex tex_back1; //Background limo
-	Gfx_Tex tex_back2; //Sunset
-	Gfx_Tex tex_back3; //Car
+	Gfx_Tex tex_back2; //Car
+	Gfx_Tex tex_back3; //Sky left
+	Gfx_Tex tex_back4; //Sky right
 	
 	//Car state
 	fixed_t car_x;
@@ -113,15 +114,15 @@ void Back_Week4_DrawFG(StageBack *back)
 	fx = stage.camera.x * 4 / 3;
 	fy = stage.camera.y * 4 / 3;
 	
-	RECT car_src = {0, 0, 256, 128};
+	RECT car_src = {0, 0, 255, 89};
 	RECT_FIXED car_dst = {
 		this->car_x - fx,
 		FIXED_DEC(60,1) - fy,
 		FIXED_DEC(400,1),
-		FIXED_DEC(200,1)
+		FIXED_DEC(140,1)
 	};
 	
-	Stage_DrawTex(&this->tex_back3, &car_src, &car_dst, stage.camera.bzoom);
+	Stage_DrawTex(&this->tex_back2, &car_src, &car_dst, stage.camera.bzoom);
 }
 
 void Back_Week4_DrawMD(StageBack *back)
@@ -134,7 +135,7 @@ void Back_Week4_DrawMD(StageBack *back)
 	fx = stage.camera.x;
 	fy = stage.camera.y;
 	
-	RECT fglimo_src = {0, 0, 255, 128};
+	RECT fglimo_src = {0, 0, 255, 127};
 	RECT_FIXED fglimo_dst = {
 		FIXED_DEC(-220,1) - fx,
 		FIXED_DEC(50,1) - fy,
@@ -180,32 +181,35 @@ void Back_Week4_DrawBG(StageBack *back)
 	
 	//Draw background limo
 	//Use same scroll as henchmen
-	RECT bglimo_src = {0, 0, 255, 128};
+	RECT bglimo_src = {0, 0, 255, 95};
 	RECT_FIXED bglimo_dst = {
 		FIXED_DEC(-210,1) - fx,
 		FIXED_DEC(30,1) - fy,
-		FIXED_DEC(256,1),
-		FIXED_DEC(128,1)
+		FIXED_DEC(255,1),
+		FIXED_DEC(95,1)
 	};
 	
 	Stage_DrawTex(&this->tex_back1, &bglimo_src, &bglimo_dst, stage.camera.bzoom);
 	bglimo_dst.x += bglimo_dst.w;
-	bglimo_src.y += 128;
+	bglimo_src.y += 95;
 	Stage_DrawTex(&this->tex_back1, &bglimo_src, &bglimo_dst, stage.camera.bzoom);
 	
 	//Draw sunset
 	fx = stage.camera.x >> 4;
 	fy = stage.camera.y >> 4;
 	
-	RECT sunset_src = {0, 0, 256, 256};
+	RECT sunset_src = {0, 0, 255, 255};
 	RECT_FIXED sunset_dst = {
-		FIXED_DEC(-165,1) - fx,
-		FIXED_DEC(-140,1) - fy,
-		FIXED_DEC(340,1),
-		FIXED_DEC(260,1)
+		FIXED_DEC(-250,1) - fx,
+		FIXED_DEC(-130,1) - fy,
+		FIXED_DEC(255,1),
+		FIXED_DEC(255,1)
 	};
 	
-	Stage_DrawTex(&this->tex_back2, &sunset_src, &sunset_dst, stage.camera.bzoom);
+	Stage_DrawTex(&this->tex_back3, &sunset_src, &sunset_dst, stage.camera.bzoom);
+	
+	sunset_dst.x += sunset_dst.w;
+	Stage_DrawTex(&this->tex_back4, &sunset_src, &sunset_dst, stage.camera.bzoom);
 }
 
 void Back_Week4_Free(StageBack *back)
@@ -238,6 +242,7 @@ StageBack *Back_Week4_New(void)
 	Gfx_LoadTex(&this->tex_back1, Archive_Find(arc_back, "back1.tim"), 0);
 	Gfx_LoadTex(&this->tex_back2, Archive_Find(arc_back, "back2.tim"), 0);
 	Gfx_LoadTex(&this->tex_back3, Archive_Find(arc_back, "back3.tim"), 0);
+	Gfx_LoadTex(&this->tex_back4, Archive_Find(arc_back, "back4.tim"), 0);
 	Mem_Free(arc_back);
 	
 	//Load henchmen textures

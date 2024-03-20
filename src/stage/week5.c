@@ -43,7 +43,7 @@ void Back_Week5_DrawBG(StageBack *back)
 	fx = stage.camera.x;
 	fy = stage.camera.y;
 	
-	RECT snow_src = {120, 155, 136, 101};
+	RECT snow_src = {120, 155, 135, 100};
 	RECT_FIXED snow_dst = {
 		FIXED_DEC(-350,1) - fx,
 		FIXED_DEC(44,1) - fy,
@@ -68,7 +68,7 @@ void Back_Week5_DrawBG(StageBack *back)
 		{{81, 0, 70, 128}, {FIXED_DEC(30,1), FIXED_DEC(-70,1), FIXED_DEC(70,1), FIXED_DEC(128,1)}},
 		{{151, 0, 23, 132}, {FIXED_DEC(100,1), FIXED_DEC(-70,1), FIXED_DEC(23,1), FIXED_DEC(132,1)}},
 		{{0, 109, 41, 139}, {FIXED_DEC(123,1), FIXED_DEC(-69,1), FIXED_DEC(41,1), FIXED_DEC(139,1)}},
-		{{41, 126, 69, 130}, {FIXED_DEC(164,1), FIXED_DEC(-52,1), FIXED_DEC(69,1), FIXED_DEC(130,1)}},
+		{{41, 126, 69, 129}, {FIXED_DEC(164,1), FIXED_DEC(-52,1), FIXED_DEC(69,1), FIXED_DEC(130,1)}},
 	};
 	
 	const struct Back_Week5_LowerBop *lbop_p = lbop_piece;
@@ -106,9 +106,9 @@ void Back_Week5_DrawBG(StageBack *back)
 		RECT src;
 		fixed_t scale;
 	} floor_piece[] = {
-		{{  0, 0, 161, 256}, FIXED_DEC(14,10)},
-		{{161, 0,   9, 256}, FIXED_DEC(7,1)},
-		{{171, 0,  85, 256}, FIXED_DEC(14,10)},
+		{{  0, 0, 161, 255}, FIXED_DEC(14,10)},
+		{{161, 0,   9, 255}, FIXED_DEC(7,1)},
+		{{171, 0,  84, 255}, FIXED_DEC(14,10)},
 	};
 	
 	RECT_FIXED floor_dst = {
@@ -132,8 +132,8 @@ void Back_Week5_DrawBG(StageBack *back)
 		RECT src;
 		RECT_FIXED dst;
 	} ubop_piece[] = {
-		{{0, 0, 256, 76}, {FIXED_DEC(-200,1), FIXED_DEC(-132,1), FIXED_DEC(256,1)*6/7, FIXED_DEC(76,1)*6/7}},
-		{{0, 76, 256, 76}, {FIXED_DEC(50,1), FIXED_DEC(-132,1), FIXED_DEC(256,1)*6/7, FIXED_DEC(76,1)*6/7}}
+		{{0, 0, 255, 76}, {FIXED_DEC(-200,1), FIXED_DEC(-132,1), FIXED_DEC(256,1)*6/7, FIXED_DEC(76,1)*6/7}},
+		{{0, 76, 255, 76}, {FIXED_DEC(50,1), FIXED_DEC(-132,1), FIXED_DEC(256,1)*6/7, FIXED_DEC(76,1)*6/7}}
 	};
 	
 	const struct Back_Week5_UpperBop *ubop_p = ubop_piece;
@@ -157,9 +157,9 @@ void Back_Week5_DrawBG(StageBack *back)
 		RECT src;
 		fixed_t scale;
 	} wall_piece[] = {
-		{{  0, 0, 113, 256}, FIXED_DEC(1,1)},
-		{{113, 0,   6, 256}, FIXED_DEC(17,1)},
-		{{119, 0, 137, 256}, FIXED_DEC(1,1)},
+		{{  0, 0, 113, 255}, FIXED_DEC(1,1)},
+		{{113, 0,   6, 255}, FIXED_DEC(17,1)},
+		{{119, 0, 136, 255}, FIXED_DEC(1,1)},
 	};
 	
 	RECT_FIXED wall_dst = {

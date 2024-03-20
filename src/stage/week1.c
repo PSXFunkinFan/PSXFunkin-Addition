@@ -39,12 +39,12 @@ void Back_Week1_DrawBG(StageBack *back)
 		FIXED_DEC(107,1),
 		FIXED_DEC(221,1)
 	};
-	RECT curtainr_src = {122, 0, 134, 256};
+	RECT curtainr_src = {123, 0, 132, 255};
 	RECT_FIXED curtainr_dst = {
 		FIXED_DEC(110,1) - fx,
 		FIXED_DEC(-150,1) - fy,
-		FIXED_DEC(134,1),
-		FIXED_DEC(256,1)
+		FIXED_DEC(132,1),
+		FIXED_DEC(255,1)
 	};
 	
 	Stage_DrawTex(&this->tex_back1, &curtainl_src, &curtainl_dst, stage.camera.bzoom);
@@ -54,7 +54,7 @@ void Back_Week1_DrawBG(StageBack *back)
 	fx = stage.camera.x;
 	fy = stage.camera.y;
 	
-	RECT stage_src = {0, 0, 256, 59};
+	RECT stage_src = {0, 0, 255, 59};
 	RECT_FIXED stage_dst = {
 		FIXED_DEC(-230,1) - fx,
 		FIXED_DEC(50,1) - fy,

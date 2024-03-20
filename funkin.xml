@@ -21,9 +21,10 @@
 			<file name = "system.cnf" type = "data" source = "iso/system.cnf"/>
 			<file name = "SCUS_000.00" type = "data" source = "funkin.ps-exe"/>
 			
+			<file name = "loading.tim" type = "data" source = "iso/images/loading.tim"/>
+			
 			<!-- Menu assets -->
 			<dir name = "menu">
-				<file name = "loading.tim" type = "data" source = "iso/images/loading.tim"/>
 				<file name = "menu.arc" type = "data" source = "iso/images/menu/menu.arc"/>
 			</dir>
 			

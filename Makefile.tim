@@ -98,7 +98,7 @@ iso/images/stages/week2/back.arc: iso/images/stages/week2/back0.tim iso/images/s
 iso/images/stages/week3/back.arc: iso/images/stages/week3/back0.tim iso/images/stages/week3/back1.tim iso/images/stages/week3/back2.tim iso/images/stages/week3/back3.tim iso/images/stages/week3/back4.tim iso/images/stages/week3/back5.tim
 
 # Week 4
-iso/images/stages/week4/back.arc: iso/images/stages/week4/back0.tim iso/images/stages/week4/back1.tim iso/images/stages/week4/back2.tim iso/images/stages/week4/back3.tim
+iso/images/stages/week4/back.arc: iso/images/stages/week4/back0.tim iso/images/stages/week4/back1.tim iso/images/stages/week4/back2.tim iso/images/stages/week4/back3.tim iso/images/stages/week4/back4.tim 
 iso/images/stages/week4/hench.arc: iso/images/stages/week4/hench0.tim iso/images/stages/week4/hench1.tim
 
 # Week 5

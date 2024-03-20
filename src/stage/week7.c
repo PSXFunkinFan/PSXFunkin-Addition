@@ -44,7 +44,7 @@ void Back_Week7_DrawBG(StageBack *back)
 	fx = stage.camera.x;
 	fy = stage.camera.y;
 	
-	RECT fg_src = {0, 0, 255, 128};
+	RECT fg_src = {0, 0, 255, 127};
 	RECT_FIXED fg_dst = {
 		FIXED_DEC(-340,1) - fx,
 		FIXED_DEC(18,1) - fy,
@@ -93,7 +93,7 @@ void Back_Week7_DrawBG(StageBack *back)
 	MUtil_RotatePoint(&tank_p3, tank_sin, tank_cos);
 	
 	//Draw tank
-	RECT tank_src = {129, 1, 126, 126};
+	RECT tank_src = {129,0, 126, 126};
 	if (animf_count & 2)
 		tank_src.y += 128;
 	
@@ -120,7 +120,7 @@ void Back_Week7_DrawBG(StageBack *back)
 	fx = stage.camera.x >> 1;
 	fy = stage.camera.y >> 1;
 	
-	RECT snipe_src = {0, 0, 128, 256};
+	RECT snipe_src = {0, 0, 128, 255};
 	RECT_FIXED snipe_dst = {
 		FIXED_DEC(-190,1) - fx,
 		FIXED_DEC(-90,1) - fy,
@@ -145,7 +145,7 @@ void Back_Week7_DrawBG(StageBack *back)
 	fx = stage.camera.x >> 2;
 	fy = stage.camera.y >> 2;
 	
-	RECT ruinsf_src = {0, 0, 256, 72};
+	RECT ruinsf_src = {0, 0, 255, 72};
 	RECT_FIXED ruinsf_dst = {
 		FIXED_DEC(-240,1) - fx,
 		FIXED_DEC(-70,1) - fy,
@@ -158,7 +158,7 @@ void Back_Week7_DrawBG(StageBack *back)
 	fx = stage.camera.x / 6;
 	fy = stage.camera.y / 6;
 	
-	RECT ruinsb_src = {0, 72, 256, 44};
+	RECT ruinsb_src = {0, 72, 255, 44};
 	RECT_FIXED ruinsb_dst = {
 		FIXED_DEC(-240,1) - fx,
 		FIXED_DEC(-60,1) - fy,
@@ -184,14 +184,14 @@ void Back_Week7_DrawBG(StageBack *back)
 	cloud_dst.x += cloud_dst.w;
 	cloud_dst.h = cloud_dst.w * 83 / 256;
 	cloud_src.y = 173;
-	cloud_src.h = 83;
+	cloud_src.h = 82;
 	Stage_DrawTex(&this->tex_back1, &cloud_src, &cloud_dst, stage.camera.bzoom);
 	
 	//Draw mountains
 	fx = stage.camera.x >> 3;
 	fy = stage.camera.y >> 3;
 	
-	RECT mountain_src = {0, 0, 255, 128};
+	RECT mountain_src = {0, 0, 255, 127};
 	RECT_FIXED mountain_dst = {
 		FIXED_DEC(-260,1) - fx,
 		FIXED_DEC(-110,1) - fy,

@@ -82,11 +82,11 @@ void Back_Week3_DrawBG(StageBack *back)
 		RECT src;
 		fixed_t scale;
 	} roof_piece[] = {
-		{{  0, 0,  16, 256}, FIXED_MUL(FIXED_DEC(3,1) * 7 / 10, FIXED_UNIT)},
-		{{ 16, 0,  55, 256}, FIXED_DEC(1,1) * 9 / 10},
-		{{ 71, 0, 128, 256}, FIXED_DEC(265,100) * 7 / 10},
-		{{199, 0,  55, 256}, FIXED_DEC(1,1) * 9 / 10},
-		{{255, 0,   0, 256}, FIXED_DEC(16,1)}
+		{{  0, 0,  16, 255}, FIXED_MUL(FIXED_DEC(3,1) * 7 / 10, FIXED_UNIT)},
+		{{ 16, 0,  55, 255}, FIXED_DEC(1,1) * 9 / 10},
+		{{ 71, 0, 128, 255}, FIXED_DEC(265,100) * 7 / 10},
+		{{199, 0,  55, 255}, FIXED_DEC(1,1) * 9 / 10},
+		{{255, 0,   0, 255}, FIXED_DEC(16,1)}
 	};
 	
 	RECT_FIXED roof_dst = {
@@ -127,12 +127,12 @@ void Back_Week3_DrawBG(StageBack *back)
 		this->train_x  -= timer_dt * 2000;
 		
 		//Draw train
-		RECT train_src = {0, 0, 256, 256};
+		RECT train_src = {0, 0, 255, 255};
 		RECT_FIXED train_dst = {
 			this->train_x - fx,
 			FIXED_DEC(-65,1) - fy,
-			FIXED_DEC(285,1),
-			FIXED_DEC(120,1)
+			FIXED_DEC(284,1),
+			FIXED_DEC(119,1)
 		};
 		
 		for (int i = 0; i < 24; i++, train_dst.x += train_dst.w)
@@ -169,7 +169,7 @@ void Back_Week3_DrawBG(StageBack *back)
 	
 	if (this->win_time >= 0)
 	{
-		RECT lightl_src = {0, 0, 256, 132};
+		RECT lightl_src = {0, 0, 255, 132};
 		RECT_FIXED lightl_dst = {
 			FIXED_DEC(-175,1) - fx,
 			FIXED_DEC(-80,1) - fy,
@@ -177,7 +177,7 @@ void Back_Week3_DrawBG(StageBack *back)
 			FIXED_DEC(103,1)
 		};
 		
-		RECT lightr_src = {0, 132, 256, 124};
+		RECT lightr_src = {0, 132, 255, 123};
 		RECT_FIXED lightr_dst = {
 			FIXED_DEC(98,1) - fx,
 			FIXED_DEC(-64,1) - fy,
@@ -194,7 +194,7 @@ void Back_Week3_DrawBG(StageBack *back)
 	}
 	
 	//Draw buildings
-	RECT building_src = {0, 0, 255, 128};
+	RECT building_src = {0, 0, 255, 127};
 	RECT_FIXED building_dst = {
 		FIXED_DEC(-195,1) - fx,
 		FIXED_DEC(-120,1) - fy,
@@ -215,7 +215,7 @@ void Back_Week3_DrawBG(StageBack *back)
 	fx = stage.camera.x >> 3;
 	fy = stage.camera.y >> 3;
 	
-	RECT sky_src = {0, 0, 255, 128};
+	RECT sky_src = {0, 0, 255, 127};
 	RECT_FIXED sky_dst = {
 		FIXED_DEC(-166,1) - fx,
 		FIXED_DEC(-117,1) - fy,
