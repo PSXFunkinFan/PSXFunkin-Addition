@@ -717,7 +717,7 @@ void Menu_Tick(void)
 			//Initialize page
 			if (menu.page_swap)
 			{
-				menu.scroll = COUNT_OF(menu_options) * FIXED_DEC(24 + SCREEN_HEIGHT2,1);
+				menu.scroll = 0;
 				menu.page_param.stage.diff = StageDiff_Normal;
 				menu.page_state.freeplay.back_r = FIXED_DEC(255,1);
 				menu.page_state.freeplay.back_g = FIXED_DEC(255,1);
@@ -765,13 +765,13 @@ void Menu_Tick(void)
 			}
 			
 			//Draw options
-			s32 next_scroll = menu.select * FIXED_DEC(24,1);
+			s32 next_scroll = menu.select * FIXED_DEC(38,1);
 			menu.scroll += (next_scroll - menu.scroll) >> 4;
 			
 			for (u8 i = 0; i < COUNT_OF(menu_options); i++)
 			{
 				//Get position on screen
-				s32 y = (i * 24) - 8 - (menu.scroll >> FIXED_SHIFT);
+				s32 y = (i * 38) - 8 - (menu.scroll >> FIXED_SHIFT);
 				if (y <= -SCREEN_HEIGHT2 - 8)
 					continue;
 				if (y >= SCREEN_HEIGHT2 + 8)
@@ -780,7 +780,7 @@ void Menu_Tick(void)
 				//Draw text
 				font_bold.draw(&font_bold,
 					Menu_LowerIf(menu_options[i].text, menu.select != i),
-					48 + (y / 4),
+					22 + (y / 6),
 					SCREEN_HEIGHT2 + y - 8,
 					FontAlign_Left
 				);
