@@ -118,34 +118,9 @@ static struct
 //Internal menu functions
 char menu_text_buffer[0x100];
 
-static const char *Menu_LowerIf(const char *text, boolean lower)
+static u8 Menu_TextSelected(boolean is_selected)
 {
-	//Copy text
-	char *dstp = menu_text_buffer;
-	if (lower)
-	{
-		for (const char *srcp = text; *srcp != '\0'; srcp++)
-		{
-			if (*srcp >= 'A' && *srcp <= 'Z')
-				*dstp++ = *srcp | 0x20;
-			else
-				*dstp++ = *srcp;
-		}
-	}
-	else
-	{
-		for (const char *srcp = text; *srcp != '\0'; srcp++)
-		{
-			if (*srcp >= 'a' && *srcp <= 'z')
-				*dstp++ = *srcp & ~0x20;
-			else
-				*dstp++ = *srcp;
-		}
-	}
-	
-	//Terminate text
-	*dstp++ = '\0';
-	return menu_text_buffer;
+	return (is_selected) ? 128 : 64;
 }
 
 static void Menu_DrawBack(boolean flash, s32 scroll, u8 r0, u8 g0, u8 b0, u8 r1, u8 g1, u8 b1)
@@ -564,11 +539,14 @@ void Menu_Tick(void)
 				//Draw all options
 				for (u8 i = 0; i < COUNT_OF(menu_options); i++)
 				{
-					font_bold.draw(&font_bold,
-						Menu_LowerIf(menu_options[i].text, menu.select != i),
+					font_bold.draw_col(&font_bold,
+						menu_options[i].text,
 						SCREEN_WIDTH2,
 						SCREEN_HEIGHT2 + (i * 32) - 48 - (menu.scroll >> FIXED_SHIFT),
-						FontAlign_Center
+						FontAlign_Center,
+						Menu_TextSelected(menu.select == i),
+						Menu_TextSelected(menu.select == i),
+						Menu_TextSelected(menu.select == i)
 					);
 				}
 			}
@@ -778,11 +756,14 @@ void Menu_Tick(void)
 					break;
 				
 				//Draw text
-				font_bold.draw(&font_bold,
-					Menu_LowerIf(menu_options[i].text, menu.select != i),
+				font_bold.draw_col(&font_bold,
+					menu_options[i].text,
 					22 + (y / 6),
 					SCREEN_HEIGHT2 + y - 8,
-					FontAlign_Left
+					FontAlign_Left,
+					Menu_TextSelected(menu.select == i),
+					Menu_TextSelected(menu.select == i),
+					Menu_TextSelected(menu.select == i)
 				);
 			}
 			
@@ -884,11 +865,14 @@ void Menu_Tick(void)
 					break;
 				
 				//Draw text
-				font_bold.draw(&font_bold,
-					Menu_LowerIf(menu_options[i].text, menu.select != i),
+				font_bold.draw_col(&font_bold,
+					menu_options[i].text,
 					48 + (y >> 2),
 					SCREEN_HEIGHT2 + y - 8,
-					FontAlign_Left
+					FontAlign_Left,
+					Menu_TextSelected(menu.select == i),
+					Menu_TextSelected(menu.select == i),
+					Menu_TextSelected(menu.select == i)
 				);
 			}
 			
@@ -1006,11 +990,14 @@ void Menu_Tick(void)
 						sprintf(text, "%s %s", menu_options[i].text, menu_options[i].spec.spec_enum.strs[*((s32*)menu_options[i].value)]);
 						break;
 				}
-				font_bold.draw(&font_bold,
-					Menu_LowerIf(text, menu.select != i),
+				font_bold.draw_col(&font_bold,
+					text,
 					48 + (y / 4),
 					SCREEN_HEIGHT2 + y - 8,
-					FontAlign_Left
+					FontAlign_Left,
+					Menu_TextSelected(menu.select == i),
+					Menu_TextSelected(menu.select == i),
+					Menu_TextSelected(menu.select == i)
 				);
 			}
 			

@@ -13,6 +13,7 @@
 #include "main.h"
 #include "random.h"
 #include "movie.h"
+#include "mutil.h"
 
 #include "menu/menu.h"
 #include "trans.h"
@@ -508,6 +509,57 @@ static void Stage_ProcessPlayer(PlayerState *this, Pad *pad, boolean playing)
 }
 
 //Stage drawing functions
+void Stage_DrawTexRotateCol(Gfx_Tex *tex, const RECT *src, const RECT_FIXED *dst, fixed_t zoom, u8 cr, u8 cg, u8 cb, fixed_t angle)
+{
+	fixed_t xz = dst->x;
+	fixed_t yz = dst->y;
+	fixed_t wz = dst->w;
+	fixed_t hz = dst->h;
+	
+	//Don't draw if HUD and is disabled
+	if (tex == &stage.tex_hud0 || tex == &stage.tex_hud1)
+	{
+		if (stage.nohud)
+			return;
+	}
+	
+	if (angle == 0)
+	{
+		Stage_DrawTexCol(tex, src, dst, zoom, cr, cg, cb);
+		return;
+	}
+	
+	u8 rotation = angle >> FIXED_SHIFT;
+	
+	fixed_t sin = MUtil_Sin(rotation) << FIXED_SHIFT;
+	fixed_t cos = MUtil_Cos(rotation) << FIXED_SHIFT;
+	fixed_t rotation_x = (FIXED_MUL(xz, cos) >> 8) - (FIXED_MUL(yz, sin) >> 8);
+	fixed_t rotation_y = (FIXED_MUL(xz, sin) >> 8) + (FIXED_MUL(yz, cos) >> 8);
+	
+	fixed_t l = (SCREEN_WIDTH2  << FIXED_SHIFT) + FIXED_MUL(rotation_x, zoom);// + FIXED_DEC(1,2);
+	fixed_t t = (SCREEN_HEIGHT2 << FIXED_SHIFT) + FIXED_MUL(rotation_y, zoom);// + FIXED_DEC(1,2);
+	fixed_t r = l + FIXED_MUL(wz, zoom);
+	fixed_t b = t + FIXED_MUL(hz, zoom);
+	
+	l >>= FIXED_SHIFT;
+	t >>= FIXED_SHIFT;
+	r >>= FIXED_SHIFT;
+	b >>= FIXED_SHIFT;
+	
+	RECT sdst = {
+		l,
+		t,
+		r - l,
+		b - t,
+	};
+	Gfx_DrawTexRotateCol(tex, src, &sdst, cr, cg, cb, angle);
+}
+
+void Stage_DrawTexRotate(Gfx_Tex *tex, const RECT *src, const RECT_FIXED *dst, fixed_t zoom, fixed_t angle)
+{
+	Stage_DrawTexRotateCol(tex, src, dst, zoom, 0x80, 0x80, 0x80, angle);
+}
+
 void Stage_DrawTexCol(Gfx_Tex *tex, const RECT *src, const RECT_FIXED *dst, fixed_t zoom, u8 cr, u8 cg, u8 cb)
 {
 	fixed_t xz = dst->x;

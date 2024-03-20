@@ -8,6 +8,7 @@
 
 #include "../mem.h"
 #include "../main.h"
+#include "../mutil.h"
 
 //Gfx constants
 #define OTLEN 8
@@ -215,6 +216,52 @@ void Gfx_BlitTexCol(Gfx_Tex *tex, const RECT *src, s32 x, s32 y, u8 r, u8 g, u8 
 void Gfx_BlitTex(Gfx_Tex *tex, const RECT *src, s32 x, s32 y)
 {
 	Gfx_BlitTexCol(tex, src, x, y, 0x80, 0x80, 0x80);
+}
+
+void Gfx_DrawTexRotateCol(Gfx_Tex *tex, const RECT *src, const RECT *dst, u8 r, u8 g, u8 b, s16 angle)
+{
+	if (angle == 0)
+	{
+		Gfx_DrawTexCol(tex, src, dst, r, g, b);
+		return;
+	}
+	
+	u8 rotation = angle;
+	
+	s16 sinVal = MUtil_Sin(rotation);
+    s16 cosVal = MUtil_Cos(rotation);
+	
+	// Get rotated points
+    POINT points[4] = {
+        {0, 0},
+        {dst->w, 0},
+        {0, dst->h},
+        {dst->w, dst->h}
+    };
+
+    for (int i = 0; i < 4; i++)
+    {
+        MUtil_RotatePoint(&points[i], sinVal, cosVal);
+        points[i].x += dst->x;
+        points[i].y += dst->y;
+    }
+	
+	//Add quad
+	POLY_FT4 *quad = (POLY_FT4*)nextpri;
+	setPolyFT4(quad);
+	setUVWH(quad, src->x, src->y, src->w, src->h);
+	setXY4(quad, points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y, points[3].x, points[3].y);
+	setRGB0(quad, r, g, b);
+	quad->tpage = tex->tpage;
+	quad->clut = tex->clut;
+	
+	addPrim(ot[db], quad);
+	nextpri += sizeof(POLY_FT4);
+}
+
+void Gfx_DrawTexRotate(Gfx_Tex *tex, const RECT *src, const RECT *dst, s16 angle)
+{
+	Gfx_DrawTexRotateCol(tex, src, dst, 0x80, 0x80, 0x80, angle);
 }
 
 void Gfx_DrawTexCol(Gfx_Tex *tex, const RECT *src, const RECT *dst, u8 r, u8 g, u8 b)

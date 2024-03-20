@@ -1,7 +1,7 @@
 	{StageId_1_4, 0xFFA5004D, "TUTORIAL"},
 	{StageId_1_1, 0xFF9271FD, "BOPEEBO"},
 	{StageId_1_2, 0xFF9271FD, "FRESH"},
-	{StageId_1_3, 0xFF9271FD, "DADBATTLE"},
+	{StageId_1_3, 0xFF9271FD, "DAD BATTLE"},
 	{StageId_2_1, 0xFF223344, "SPOOKEEZ"},
 	{StageId_2_2, 0xFF223344, "SOUTH"},
 	{StageId_2_3, 0xFF223344, "MONSTER"},

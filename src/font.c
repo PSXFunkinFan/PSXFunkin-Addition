@@ -64,11 +64,11 @@ void Font_Bold_DrawCol(struct FontData *this, const char *text, s32 x, s32 y, Fo
 		//Draw character
 		if ((c -= 'A') <= 'z' - 'A') //Lower-case will show inverted colours
 		{
-			RECT src = {((c % 8) * 28) + v0, (c / 8) * 16, 14, 16};
+			RECT src = {((c % 9) * 28) + v0, (c / 9) * 18, 14, 18};
 			Font_DrawTex(this, &src, x, y, r, g, b);
 		}
 		
-		x += 13;
+		x += 12;
 	}
 }
 
