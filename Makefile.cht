@@ -1,10 +1,10 @@
 all: \
   $(addsuffix .cht, $(wildcard iso/chart/*.json)) \
-  iso/week7/picospeaker.json.cht
+  iso/images/stages/week7/picospeaker.json.cht
 
 iso/chart/%.json.cht: iso/chart/%.json
 	tools/funkinchartpak/funkinchartpak $<
-iso/week7/picospeaker.json.cht: iso/week7/picospeaker.json
+iso/images/stages/week7/picospeaker.json.cht: iso/images/stages/week7/picospeaker.json
 	tools/funkinchartpak/funkinchartpak $<
 	
 # Rule to clean all .cht files
