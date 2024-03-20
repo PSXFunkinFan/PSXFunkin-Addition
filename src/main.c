@@ -42,6 +42,12 @@ void ErrorLock(void)
 static u8 malloc_heap[0x1B0000];
 #endif
 
+//Game default options
+void DefaultOptions(void)
+{
+	stage.ghost = true;
+}
+
 //Entry point
 int main(int argc, char **argv)
 {
@@ -62,6 +68,7 @@ int main(int argc, char **argv)
 	Timer_Init();
 	
 	//Start game
+	DefaultOptions();
 	Font_LoadTextures();
 	
 	gameloop = GameLoop_Menu;
